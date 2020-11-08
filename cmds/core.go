@@ -98,7 +98,7 @@ func finaliseCmdHelpStr(cmdHelpStr string, prefix string, strBldr *strings.Build
 
 func about(ctx *lib.Ctx) (string, error) {
 	return fmt.Sprintf(
-		"**Whiskey is a bot by %v TeamWhiskey\n\nfind us on Github ~ :octopus: %v**"+
+		"**Whiskey is a bot by %v TeamWhiskey\n\nfind us on github ~ :octopus: %v**"+
 			"\n\n**the ~~dispos~~ team**\n\t\\~ zorbyte (Founder)\n\t\\~ MountainWhale\n\t\\~ FardinDaDev",
 		coreCmdsEmoji,
 		teamWhiskeyGithub,

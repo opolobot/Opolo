@@ -21,7 +21,7 @@ func RegisterCmds(whiskey *lib.Whiskey) {
 	w = whiskey
 	log.Println("Registering commands")
 
-	registerCategory("core", "Whiskey Core", coreCmdsEmoji, &coreCmds)
+	registerCategory("core", "Whiskey core", coreCmdsEmoji, &coreCmds)
 }
 
 func registerCategory(name string, category string, emoji string, categoryCmds *[]*lib.Cmd) {
