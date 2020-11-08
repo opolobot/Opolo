@@ -1,0 +1,3 @@
+# Whiskey
+
+A discord bot.
