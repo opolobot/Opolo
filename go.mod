@@ -1,4 +1,4 @@
-module github.com/zorbyte/some_bot
+module github.com/zorbyte/whiskey
 
 go 1.15
 
