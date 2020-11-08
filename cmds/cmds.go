@@ -1,7 +1,6 @@
 package cmds
 
 import (
-	"fmt"
 	"log"
 	"reflect"
 	"runtime"
@@ -27,9 +26,12 @@ func RegisterCmds(whiskey *lib.Whiskey) {
 
 func registerCategory(name string, category string, emoji string, categoryCmds *[]*lib.Cmd) {
 	log.Printf("Registering %v commands\n", name)
+
+	// Set categories with styling for pre-made help components.
 	categoryDisplayName := emoji + " __**" + category + "**__"
 	curHelpOutputs := make(map[string]string)
 	helpOutputs[categoryDisplayName] = &curHelpOutputs
+
 	for _, cmd := range *categoryCmds {
 		cmd.Category = categoryDisplayName
 
@@ -38,23 +40,7 @@ func registerCategory(name string, category string, emoji string, categoryCmds *
 			cmd.Name = getCmdRunnerName(cmd.Runner)
 		}
 
-		// Prebuild help strings for performance (maybe?)
-		// Note: The first **` is missing for dynamic prefix support, as
-		// including it and styling the dynamic prefix would ruin the formatting
-		usageStr := (func() string {
-			if cmd.Usage != "" {
-				return " " + cmd.Usage
-			}
-
-			return ""
-		})()
-
-		cmdHelpStr := fmt.Sprintf(
-			"%v%v`**\n> **desc ~** %v\n> **aliases ~** %v",
-			cmd.Name, usageStr,
-			cmd.Description, strings.Join(cmd.Aliases, ", "),
-		)
-		curHelpOutputs[cmd.Name] = cmdHelpStr
+		curHelpOutputs[cmd.Name] = generateHelpStr(cmd)
 
 		log.Printf("Registering command %v\n", cmd.Name)
 		w.RegCmd(cmd)
@@ -64,4 +50,34 @@ func registerCategory(name string, category string, emoji string, categoryCmds *
 func getCmdRunnerName(i interface{}) string {
 	nameWithPkg := runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
 	return nameWithPkg[pkgNameLen:]
+}
+
+func generateHelpStr(cmd *lib.Cmd) string {
+	// Prebuild help strings for performance (maybe?)
+	var cmdHelpStrBldr strings.Builder
+
+	// Name and usage.
+	cmdHelpStrBldr.WriteString(cmd.Name)
+	if cmd.Usage != "" {
+		cmdHelpStrBldr.WriteString(" ")
+		cmdHelpStrBldr.WriteString(cmd.Usage)
+	}
+
+	// The first **` is missing for dynamic prefix support, as
+	// including it and styling the dynamic prefix would ruin the formatting
+	cmdHelpStrBldr.WriteString("`**")
+
+	// Description.
+	if cmd.Description != "" {
+		cmdHelpStrBldr.WriteString("\n> **desc ~** ")
+		cmdHelpStrBldr.WriteString(cmd.Description)
+	}
+
+	// Aliases
+	if len(cmd.Aliases) > 0 {
+		cmdHelpStrBldr.WriteString("\n> **aliases ~** ")
+		cmdHelpStrBldr.WriteString(strings.Join(cmd.Aliases, ", "))
+	}
+
+	return cmdHelpStrBldr.String()
 }
