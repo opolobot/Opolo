@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -29,12 +30,15 @@ type Whiskey struct {
 
 	Cmds    map[string]*Cmd
 	aliases map[string]string
+
+	startTime time.Time
 }
 
 // NewWhiskey creates a Whiskey instance
 func NewWhiskey() *Whiskey {
-	log.Printf("Loading config file @ %v\n", ConfFileName)
-	config, err := FetchConf()
+	startTime := time.Now()
+	log.Printf("Loading config file @ %v\n", configFileName)
+	config, err := readConfig()
 	if err != nil {
 		log.Fatal("Failed to load config: ", err)
 	}
@@ -54,6 +58,8 @@ func NewWhiskey() *Whiskey {
 
 		Cmds:    map[string]*Cmd{},
 		aliases: map[string]string{},
+
+		startTime: startTime,
 	}
 
 	return w
@@ -95,6 +101,9 @@ func (w *Whiskey) FindCmd(name string) *Cmd {
 
 // Start starts the bot and establishes a ws conn.
 func (w *Whiskey) Start() {
+	// Measure bootstrap speed.
+	log.Printf("Bootstap time was %v", time.Since(w.startTime))
+
 	// Open the websocket and begin listening.
 	err := w.S.Open()
 	if err != nil {
@@ -102,12 +111,11 @@ func (w *Whiskey) Start() {
 	}
 
 	// Wait here until CTRL-C or other term signal is received.
-	log.Println("Whiskey is now running. Press CTRL-C to exit")
+	log.Println("Opened WS connection. Use CTRL-C to exit")
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 
 	// Cleanly close down the Discord session.
-	log.Println("Shutting down...")
 	w.S.Close()
 }

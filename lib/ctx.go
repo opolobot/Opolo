@@ -2,6 +2,7 @@ package lib
 
 import (
 	"log"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -16,6 +17,8 @@ type Ctx struct {
 	// String used to call the command
 	CmdCallKey string
 	Args       []string
+
+	StartTime time.Time
 
 	// TODO(@zorbyte): Create a db, consider using gorm.
 	DB interface{}

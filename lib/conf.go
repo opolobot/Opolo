@@ -8,7 +8,7 @@ import (
 )
 
 // ConfFileName is Location of config file relative to the dir of the executable.
-const ConfFileName string = "./config.yml"
+const configFileName string = "./config.yml"
 
 // Config represents the bot configuration file.
 type Config struct {
@@ -20,8 +20,8 @@ type Config struct {
 
 // FetchConf fetches a config file and populates the structure.
 // Found here: https://stackoverflow.com/questions/30947534/how-to-read-a-yaml-file
-func FetchConf() (*Config, error) {
-	buf, err := ioutil.ReadFile(ConfFileName)
+func readConfig() (*Config, error) {
+	buf, err := ioutil.ReadFile(configFileName)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +29,7 @@ func FetchConf() (*Config, error) {
 	c := &Config{}
 	err = yaml.Unmarshal(buf, c)
 	if err != nil {
-		return nil, fmt.Errorf("Bad config file %q: %v", ConfFileName, err)
+		return nil, fmt.Errorf("Bad config file: %v", err)
 	}
 
 	return c, nil

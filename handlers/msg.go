@@ -15,7 +15,8 @@ var stringSplitter = regexp.MustCompile(" +")
 // MsgCreate handles msg create event and dispatches commands
 func MsgCreate(w *lib.Whiskey) func(s *discordgo.Session, m *discordgo.MessageCreate) {
 	return func(s *discordgo.Session, m *discordgo.MessageCreate) {
-		start := time.Now()
+		startTime := time.Now()
+
 		// Ignore messages by the bot itself.
 		if m.Author.ID == s.State.User.ID || !strings.HasPrefix(m.Content, w.Config.Prefix) {
 			return
@@ -37,6 +38,8 @@ func MsgCreate(w *lib.Whiskey) func(s *discordgo.Session, m *discordgo.MessageCr
 
 				CmdCallKey: cmdCallKey,
 				Args:       cmdArgs,
+
+				StartTime: startTime,
 			}
 
 			strToSend, err := cmd.Runner(c)
@@ -45,7 +48,7 @@ func MsgCreate(w *lib.Whiskey) func(s *discordgo.Session, m *discordgo.MessageCr
 				return
 			}
 
-			log.Printf("Time for command execution: %v", time.Since(start))
+			log.Printf("Time for command execution: %v", time.Since(startTime))
 			if strToSend != "" {
 				c.Send(strToSend)
 			}
