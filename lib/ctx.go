@@ -43,6 +43,9 @@ func (ctx *Ctx) SendError(err error) {
 
 	errTxt := ":rotating_light: An error occurred while handling the command `" + cmdName + "`:\n```" + err.Error() + "```"
 	ctx.S.ChannelMessageSend(ctx.M.ChannelID, errTxt+"\n\nThe error has been reported")
-	ctx.S.ChannelMessageSend(ctx.W.Config.ErrChannel, errTxt)
+	if ctx.W.Config.LogChannel != "" {
+		ctx.S.ChannelMessageSend(ctx.W.Config.LogChannel, errTxt)
+	}
+
 	log.Println("An error occurred while handling the command "+cmdName+":", err)
 }

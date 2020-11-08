@@ -12,7 +12,7 @@ const ConfFileName string = "./config.yml"
 
 // Config represents the bot configuration file.
 type Config struct {
-	ErrChannel string `yaml:"errorChannel"`
+	LogChannel string `yaml:"logChannel"`
 	Prefix     string `yaml:"prefix"`
 	Status     string `yaml:"status"`
 	Token      string `yaml:"token"`
