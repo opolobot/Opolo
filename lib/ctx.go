@@ -22,13 +22,8 @@ type Ctx struct {
 }
 
 // Send sends a message to the channel the msg came from.
-func (ctx *Ctx) Send(content string) *discordgo.Message {
-	msg, err := ctx.S.ChannelMessageSend(ctx.M.ChannelID, content)
-	if err != nil {
-		ctx.SendError(err)
-		return nil
-	}
-	return msg
+func (ctx *Ctx) Send(content string) (*discordgo.Message, error) {
+	return ctx.S.ChannelMessageSend(ctx.M.ChannelID, content)
 }
 
 // SendError reports an error to the err channel and to the user

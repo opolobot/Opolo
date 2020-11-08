@@ -27,7 +27,7 @@ type Whiskey struct {
 	S      *discordgo.Session
 	Config *Config
 
-	cmds    map[string]*Cmd
+	Cmds    map[string]*Cmd
 	aliases map[string]string
 }
 
@@ -52,7 +52,7 @@ func NewWhiskey() *Whiskey {
 		S:      s,
 		Config: config,
 
-		cmds:    map[string]*Cmd{},
+		Cmds:    map[string]*Cmd{},
 		aliases: map[string]string{},
 	}
 
@@ -61,12 +61,12 @@ func NewWhiskey() *Whiskey {
 
 // RegCmd registers a command to whiskey.
 func (w *Whiskey) RegCmd(cmd *Cmd) {
-	_, ok := w.cmds[cmd.Name]
+	_, ok := w.Cmds[cmd.Name]
 	if ok {
 		log.Fatal("Duplicate command key " + cmd.Name + " was registered")
 	}
 
-	w.cmds[cmd.Name] = cmd
+	w.Cmds[cmd.Name] = cmd
 
 	for _, alias := range cmd.Aliases {
 		_, ok = w.aliases[alias]
@@ -80,7 +80,7 @@ func (w *Whiskey) RegCmd(cmd *Cmd) {
 
 // FindCmd finds the cmd with either the name or the alias
 func (w *Whiskey) FindCmd(name string) *Cmd {
-	cmd, ok := w.cmds[name]
+	cmd, ok := w.Cmds[name]
 	if !ok {
 		name, ok = w.aliases[name]
 		if ok {
