@@ -10,5 +10,5 @@ import (
 func RegisterHandlers(w *lib.Whiskey) {
 	log.Println("Registering event handlers")
 	w.S.AddHandler(MsgCreate(w))
-	w.S.AddHandlerOnce(Ready(w))
+	w.S.AddHandler(Ready(w))
 }

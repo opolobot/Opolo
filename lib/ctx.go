@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -14,6 +15,8 @@ type Ctx struct {
 	M *discordgo.Message
 	C *Cmd
 
+	lastMsg *discordgo.Message
+
 	// String used to call the command
 	CmdCallKey string
 	Args       []string
@@ -26,7 +29,20 @@ type Ctx struct {
 
 // Send sends a message to the channel the msg came from.
 func (ctx *Ctx) Send(content string) (*discordgo.Message, error) {
-	return ctx.S.ChannelMessageSend(ctx.M.ChannelID, content)
+	m, err := ctx.S.ChannelMessageSend(ctx.M.ChannelID, content)
+	ctx.lastMsg = m
+	return m, err
+}
+
+// Edit edits the last msg sent by the context.
+func (ctx *Ctx) Edit(content string) (*discordgo.Message, error) {
+	if ctx.lastMsg == nil {
+		return nil, fmt.Errorf("Tried to edit a message that does not exist")
+	}
+
+	m, err := ctx.S.ChannelMessageEdit(ctx.lastMsg.ChannelID, ctx.lastMsg.ID, content)
+	ctx.lastMsg = m
+	return m, err
 }
 
 // SendError reports an error to the err channel and to the user

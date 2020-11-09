@@ -8,16 +8,19 @@ import (
 	"github.com/zorbyte/whiskey/lib"
 )
 
-var coreCmds []*lib.Cmd
+var coreCmds *cmdCategory
 
-const (
-	coreCmdsEmoji     string = ":tumbler_glass:"
-	teamWhiskeyGithub string = "https://github.com/TeamWhiskey"
-)
+const teamWhiskeyGithub string = "https://github.com/TeamWhiskey"
 
 func init() {
-	coreCmds = append(
-		coreCmds,
+	coreCmds = &cmdCategory{
+		Emoji:       ":tumbler_glass:",
+		Name:        "core",
+		DisplayName: "Whiskey core",
+	}
+
+	coreCmds.Cmds = append(
+		coreCmds.Cmds,
 		&lib.Cmd{
 			Runner:      ping,
 			Aliases:     []string{"p"},
@@ -35,6 +38,8 @@ func init() {
 		},
 	)
 }
+
+// -- ping --
 
 func ping(ctx *lib.Ctx) (string, error) {
 	processingTime := time.Since(ctx.StartTime)
@@ -54,6 +59,8 @@ func ping(ctx *lib.Ctx) (string, error) {
 
 	return "", nil
 }
+
+// -- help --
 
 func help(ctx *lib.Ctx) (string, error) {
 	var helpStrBldr strings.Builder
@@ -96,11 +103,12 @@ func finaliseCmdHelpStr(cmdHelpStr string, prefix string, strBldr *strings.Build
 	strBldr.WriteString("\n\n")
 }
 
+// -- about --
+
 func about(ctx *lib.Ctx) (string, error) {
 	return fmt.Sprintf(
-		"**Whiskey is a bot by %v TeamWhiskey\n\nfind us on github ~ :octopus: %v**"+
+		"**Whiskey is a bot by :tumbler_glass: TeamWhiskey\n\nfind us on github ~ :octopus: %v**"+
 			"\n\n**the ~~dispos~~ team**\n\t\\~ zorbyte (Founder)\n\t\\~ MountainWhale\n\t\\~ FardinDaDev",
-		coreCmdsEmoji,
 		teamWhiskeyGithub,
 	), nil
 }

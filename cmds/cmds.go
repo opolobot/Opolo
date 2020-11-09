@@ -9,6 +9,15 @@ import (
 	"github.com/zorbyte/whiskey/lib"
 )
 
+type cmdList []*lib.Cmd
+
+type cmdCategory struct {
+	Emoji       string
+	Name        string
+	DisplayName string
+	Cmds        []*lib.Cmd
+}
+
 // Length of "github.com/zorbyte/whiskey/cmds."
 const pkgNameLen uint16 = 32
 
@@ -21,18 +30,19 @@ func RegisterCmds(whiskey *lib.Whiskey) {
 	w = whiskey
 	log.Println("Registering commands")
 
-	registerCategory("core", "Whiskey core", coreCmdsEmoji, &coreCmds)
+	registerCategory(funCmds)
+	registerCategory(coreCmds)
 }
 
-func registerCategory(name string, category string, emoji string, categoryCmds *[]*lib.Cmd) {
-	log.Printf("Registering %v commands\n", name)
+func registerCategory(cmdCat *cmdCategory) {
+	log.Printf("Registering %v commands\n", cmdCat.Name)
 
 	// Set categories with styling for pre-made help components.
-	categoryDisplayName := emoji + " __**" + category + "**__"
+	categoryDisplayName := cmdCat.Emoji + " __**" + cmdCat.DisplayName + "**__"
 	curHelpOutputs := make(map[string]string)
 	helpOutputs[categoryDisplayName] = &curHelpOutputs
 
-	for _, cmd := range *categoryCmds {
+	for _, cmd := range cmdCat.Cmds {
 		cmd.Category = categoryDisplayName
 
 		// In the case that no name was provided.
