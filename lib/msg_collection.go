@@ -63,16 +63,15 @@ func (w *Whiskey) CancelCollector(channelID string, id uint16) error {
 				close(col.Msgs)
 
 				// Delete the element from the slice.
-				// https://yourbasic.org/golang/delete-element-slice/
-				// Copy last element to index i.
-				cols[i] = cols[len(cols)-1]
-				// Erase last element (write zero value).
-				cols[len(cols)-1] = nil
-				cols = cols[:len(cols)-1]
+				lastIdx := len(cols) - 1
+				cols[i] = cols[lastIdx]
+				cols[lastIdx] = nil
+				cols = cols[:lastIdx]
 
 				// Recommit the slice to the whiskey instance.
-				w.Collectors[channelID] = cols // <-- forgot this
+				w.Collectors[channelID] = cols
 				found = true
+
 				break
 			}
 		}
