@@ -10,23 +10,12 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-// CmdRunner is the func to run for the cmd
-type CmdRunner func(ctx *Ctx) (string, error)
-
-// Cmd is information about the command as well as its runner
-type Cmd struct {
-	Runner      CmdRunner
-	Name        string
-	Usage       string
-	Aliases     []string
-	Description string
-	Category    string
-}
-
 // Whiskey is the mediator for the bot
 type Whiskey struct {
 	S      *discordgo.Session
 	Config *Config
+
+	Collectors map[string][]*MsgCollector
 
 	Cmds    map[string]*Cmd
 	aliases map[string]string
@@ -56,6 +45,8 @@ func NewWhiskey() *Whiskey {
 		S:      s,
 		Config: config,
 
+		Collectors: make(map[string][]*MsgCollector),
+
 		Cmds:    map[string]*Cmd{},
 		aliases: map[string]string{},
 
@@ -65,38 +56,11 @@ func NewWhiskey() *Whiskey {
 	return w
 }
 
-// RegCmd registers a command to whiskey.
-func (w *Whiskey) RegCmd(cmd *Cmd) {
-	_, ok := w.Cmds[cmd.Name]
-	if ok {
-		log.Fatal("Duplicate command key " + cmd.Name + " was registered")
+// SendError sends an error to the error channel
+func (w *Whiskey) SendError(errText string) {
+	if w.Config.LogChannel != "" {
+		w.S.ChannelMessageSend(w.Config.LogChannel, errText)
 	}
-
-	w.Cmds[cmd.Name] = cmd
-
-	for _, alias := range cmd.Aliases {
-		_, ok = w.aliases[alias]
-		if ok {
-			log.Fatal("Duplicate command alias " + alias + " was registered")
-		}
-
-		w.aliases[alias] = cmd.Name
-	}
-}
-
-// FindCmd finds the cmd with either the name or the alias
-func (w *Whiskey) FindCmd(name string) *Cmd {
-	cmd, ok := w.Cmds[name]
-	if !ok {
-		name, ok = w.aliases[name]
-		if ok {
-			return w.FindCmd(name)
-		}
-
-		return nil
-	}
-
-	return cmd
 }
 
 // Start starts the bot and establishes a ws conn.

@@ -31,6 +31,7 @@ func RegisterCmds(whiskey *lib.Whiskey) {
 	log.Println("Registering commands")
 
 	registerCategory(funCmds)
+	registerCategory(modCmds)
 	registerCategory(coreCmds)
 }
 

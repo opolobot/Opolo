@@ -9,8 +9,6 @@ import (
 
 var funCmds *cmdCategory
 
-const funCmdsEmoji string = ":tada:"
-
 func init() {
 	funCmds = &cmdCategory{
 		Emoji:       ":tada:",

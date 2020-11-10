@@ -55,7 +55,7 @@ func ping(ctx *lib.Ctx) (string, error) {
 		return "", err
 	}
 
-	ctx.S.ChannelMessageEdit(m.ChannelID, m.ID, fmt.Sprintf(
+	ctx.Edit(fmt.Sprintf(
 		"***:ping_pong:  ~Pong!***\n"+
 			"\n> __**latency**__        **~**   :arrows_counterclockwise: %v"+
 			"\n> __**exec. time**__   **~**   :stopwatch: %v",

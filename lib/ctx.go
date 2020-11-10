@@ -1,7 +1,7 @@
 package lib
 
 import (
-	"fmt"
+	"errors"
 	"log"
 	"time"
 
@@ -37,12 +37,39 @@ func (ctx *Ctx) Send(content string) (*discordgo.Message, error) {
 // Edit edits the last msg sent by the context.
 func (ctx *Ctx) Edit(content string) (*discordgo.Message, error) {
 	if ctx.lastMsg == nil {
-		return nil, fmt.Errorf("Tried to edit a message that does not exist")
+		return nil, errors.New("Tried to edit a message that does not exist")
 	}
 
 	m, err := ctx.S.ChannelMessageEdit(ctx.lastMsg.ChannelID, ctx.lastMsg.ID, content)
 	ctx.lastMsg = m
 	return m, err
+}
+
+// Delete deletes the last recently sent message.
+func (ctx *Ctx) Delete() error {
+	if ctx.lastMsg == nil {
+		return errors.New("Tried to delete a message that does not exist")
+	}
+
+	return ctx.S.ChannelMessageDelete(ctx.lastMsg.ChannelID, ctx.lastMsg.ID)
+}
+
+// Collect collects messages.
+func (ctx *Ctx) Collect(time time.Duration, amnt ...int) (chan *discordgo.Message, error) {
+	amntEmpty := len(amnt) == 0
+	if time == 0 && amntEmpty {
+		return nil, errors.New("ctx.Collect can not collect indefinitely if no amount is supplied")
+	}
+
+	var amntToPurge int
+	if amntEmpty {
+		amntToPurge = 0
+	} else {
+		amntToPurge = amnt[0]
+	}
+
+	col := ctx.W.Collect(ctx.M.ChannelID, time, amntToPurge)
+	return col.Msgs, nil
 }
 
 // SendError reports an error to the err channel and to the user
@@ -57,9 +84,7 @@ func (ctx *Ctx) SendError(err error) {
 
 	errTxt := ":rotating_light: An error occurred while handling the command `" + cmdName + "`:\n```" + err.Error() + "```"
 	ctx.S.ChannelMessageSend(ctx.M.ChannelID, errTxt+"\n\nThe error has been reported")
-	if ctx.W.Config.LogChannel != "" {
-		ctx.S.ChannelMessageSend(ctx.W.Config.LogChannel, errTxt)
-	}
+	ctx.W.SendError(errTxt)
 
 	log.Println("An error occurred while handling the command "+cmdName+":", err)
 }
