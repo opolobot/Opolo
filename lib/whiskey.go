@@ -37,9 +37,8 @@ func NewWhiskey() *Whiskey {
 		log.Fatal("Failed to create discord session:", err)
 	}
 
-	// We need information about guilds (which includes their channels),
-	// messages and voice states.
-	s.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuilds | discordgo.IntentsGuildMessages | discordgo.IntentsGuildVoiceStates)
+	// We need information about guilds (which includes their channels) and msgs.
+	s.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuilds | discordgo.IntentsGuildMessages)
 
 	w := &Whiskey{
 		S:      s,
