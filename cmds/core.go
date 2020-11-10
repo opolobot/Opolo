@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/zorbyte/whiskey/lib"
 )
 
@@ -42,9 +43,14 @@ func init() {
 // -- ping --
 
 func ping(ctx *lib.Ctx) (string, error) {
-	processingTime := time.Since(ctx.StartTime)
+	executionTime := time.Since(ctx.StartTime)
 	startTime := time.Now()
 	m, err := ctx.Send(":ping_pong: Ping?")
+	if err != nil {
+		return "", err
+	}
+
+	messageSentTime, err := discordgo.SnowflakeTimestamp(m.ID)
 	if err != nil {
 		return "", err
 	}
@@ -52,9 +58,9 @@ func ping(ctx *lib.Ctx) (string, error) {
 	ctx.S.ChannelMessageEdit(m.ChannelID, m.ID, fmt.Sprintf(
 		"***:ping_pong:  ~Pong!***\n"+
 			"\n> __**latency**__        **~**   :arrows_counterclockwise: %v"+
-			"\n> __**proc. time**__   **~**   :stopwatch: %v",
-		time.Since(startTime).Round(time.Millisecond),
-		processingTime.Round(time.Microsecond),
+			"\n> __**exec. time**__   **~**   :stopwatch: %v",
+		messageSentTime.Sub(startTime).Round(time.Millisecond),
+		executionTime.Round(time.Microsecond),
 	))
 
 	return "", nil
@@ -108,7 +114,7 @@ func finaliseCmdHelpStr(cmdHelpStr string, prefix string, strBldr *strings.Build
 func about(ctx *lib.Ctx) (string, error) {
 	return fmt.Sprintf(
 		"**Whiskey is a bot by :tumbler_glass: TeamWhiskey\n\nfind us on github ~ :octopus: %v**"+
-			"\n\n**the ~~dispos~~ team**\n\t\\~ zorbyte (Founder)\n\t\\~ MountainWhale\n\t\\~ FardinDaDev",
+			"\n\n**the ~~dipsos~~ team**\n\t\\~ zorbyte (Founder)\n\t\\~ MountainWhale\n\t\\~ FardinDaDev",
 		teamWhiskeyGithub,
 	), nil
 }

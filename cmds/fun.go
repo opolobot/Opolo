@@ -21,16 +21,17 @@ func init() {
 	funCmds.Cmds = append(
 		funCmds.Cmds,
 		&lib.Cmd{
-			Runner:      coinFlip,
+			Runner:      flip,
 			Aliases:     []string{"f"},
 			Description: "Flips a coin",
 		},
 	)
 }
 
-// -- coinFlip --
+// -- flip --
 
-func coinFlip(ctx *lib.Ctx) (string, error) {
+// flip flips a coin with results being either heads or tails
+func flip(ctx *lib.Ctx) (string, error) {
 	headsOrTails := (func() string {
 		switch rand.Intn(2) {
 		case 0:
