@@ -2,11 +2,11 @@ package main
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/zorbyte/whiskey/cmds"
-	"github.com/zorbyte/whiskey/cmds/core"
-	"github.com/zorbyte/whiskey/cmds/fun"
-	"github.com/zorbyte/whiskey/cmds/mod"
-	"github.com/zorbyte/whiskey/hdlrs"
+	"github.com/TeamWhiskey/whiskey/cmds"
+	"github.com/TeamWhiskey/whiskey/cmds/core"
+	"github.com/TeamWhiskey/whiskey/cmds/fun"
+	"github.com/TeamWhiskey/whiskey/cmds/mod"
+	"github.com/TeamWhiskey/whiskey/hdlrs"
 )
 
 func registerHandlers(session *discordgo.Session) {
