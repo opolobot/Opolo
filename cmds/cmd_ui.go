@@ -42,13 +42,13 @@ func (cmdUI *CommandUI) AddCategory(cmdCat *CommandCategory) {
 	helpOutputs := make(map[string]string)
 	cmdUI.HelpOutputs[cmdCat.DisplayName()] = &helpOutputs
 	for _, cmd := range cmdCat.cmds {
-		log.Printf("Registering command %v]n", cmd.Name)
 		helpOutputs[cmd.Name] = generateHelpStr(cmd)
 		cmdUI.addCommand(cmd)
 	}
 }
 
 func (cmdUI *CommandUI) addCommand(cmd *Command) {
+	log.Printf("Registering command %v\n", cmd.Name)
 	cmdUI.cmdRunes = append(cmdUI.cmdRunes, []rune(cmd.Name))
 	for _, alias := range cmd.Aliases {
 		cmdUI.aliases[alias] = cmd.Name
@@ -89,8 +89,8 @@ func (cmdUI *CommandUI) Dispatch(session *discordgo.Session, msg *discordgo.Mess
 
 	if cmd == nil {
 		closest, distance := cmdUI.FindClosestCmdMatch(cmdCallKey)
-		if distance <= 2 {
-			ctx.Send(fmt.Sprintf("*:question: ~ Did you mean `%v%v`?*", config.Prefix, closest))
+		if distance <= 2 && distance != 0 {
+			ctx.Send(fmt.Sprintf("**:question: ~ Did you mean `%v`?**", config.Prefix + closest))
 		}
 	} else {
 		ctx.Cmd = cmd
@@ -162,7 +162,7 @@ func (cmdUI *CommandUI) LookupCommand(cmdNameOrAlias string) (*Command, error) {
 // FindClosestCmdMatch supplies "did you mean" functionality for a command.
 func (cmdUI *CommandUI) FindClosestCmdMatch(nonExistentCmd string) (string, int) {
 	nonExtCmdRunes := []rune(nonExistentCmd)
-	var shortestDistance int
+	shortestDistance := 100
 	var bestCmdRunes []rune
 	for _, cmdRunes := range cmdUI.cmdRunes {
 		dist := levenshtein.DistanceForStrings(nonExtCmdRunes, cmdRunes, levenshtein.DefaultOptions)
