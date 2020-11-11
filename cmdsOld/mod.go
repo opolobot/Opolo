@@ -1,4 +1,4 @@
-package cmds
+package cmdsOld
 
 import (
 	"fmt"
@@ -53,6 +53,11 @@ func purge(ctx *lib.Ctx) (string, error) {
 		return "", err
 	}
 
+	go (func() {
+		time.Sleep(5 * time.Second)
+		ctx.Edit("")
+	})()
+
 	accepted := false
 	denied := false
 	for msg := range msgs {
@@ -79,8 +84,8 @@ func purge(ctx *lib.Ctx) (string, error) {
 		return "Timed out.", nil
 	}
 
-	hundreds := int(math.Floor(float64(amnt) / 100))
-	iters := hundreds
+	quotient := int(math.Floor(float64(amnt) / 100))
+	iters := quotient
 	rem := amnt % 100
 	if rem > 0 {
 		iters++
@@ -89,7 +94,7 @@ func purge(ctx *lib.Ctx) (string, error) {
 	curMsgsIdx := 0
 	for i := 0; i < iters; i++ {
 		amntToDel := 0
-		if i <= hundreds && hundreds != 0 {
+		if i <= quotient && quotient != 0 {
 			if err != nil {
 				return "", err
 			}

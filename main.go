@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/zorbyte/whiskey/cmds"
+	"github.com/zorbyte/whiskey/cmdsOld"
 	"github.com/zorbyte/whiskey/handlers"
 	"github.com/zorbyte/whiskey/lib"
 )
@@ -15,6 +15,6 @@ func main() {
 
 	w := lib.NewWhiskey()
 	handlers.RegisterHandlers(w)
-	cmds.RegisterCmds(w)
+	cmdsOld.RegisterCmds(w)
 	w.Start()
 }

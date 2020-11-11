@@ -1,9 +1,11 @@
 package lib
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
+	"runtime/debug"
 	"syscall"
 	"time"
 
@@ -40,7 +42,7 @@ func NewWhiskey() *Whiskey {
 	// We need information about guilds (which includes their channels) and msgs.
 	s.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuilds | discordgo.IntentsGuildMessages)
 
-	w := &Whiskey{
+	whiskey := &Whiskey{
 		S:      s,
 		Config: config,
 
@@ -52,23 +54,26 @@ func NewWhiskey() *Whiskey {
 		startTime: startTime,
 	}
 
-	return w
+	return whiskey
 }
 
 // SendError sends an error to the error channel
-func (w *Whiskey) SendError(errText string) {
-	if w.Config.LogChannel != "" {
-		w.S.ChannelMessageSend(w.Config.LogChannel, errText)
+func (whiskey *Whiskey) SendError(err error) {
+	log.Println(err)
+	log.Println(debug.Stack())
+	if whiskey.Config.LogChannel != "" {
+		errStr := fmt.Sprintf("**:warning: An error occurred in-flight**\n```%v\n%v```", err.Error(), string(debug.Stack()))
+		whiskey.S.ChannelMessageSend(whiskey.Config.LogChannel, errStr)
 	}
 }
 
 // Start starts the bot and establishes a ws conn.
-func (w *Whiskey) Start() {
+func (whiskey *Whiskey) Start() {
 	// Measure bootstrap speed.
-	log.Printf("Bootstap time was %v", time.Since(w.startTime))
+	log.Printf("Bootstap time was %v", time.Since(whiskey.startTime))
 
 	// Open the websocket and begin listening.
-	err := w.S.Open()
+	err := whiskey.S.Open()
 	if err != nil {
 		log.Fatal("Failed to establish ws connection:", err)
 	}
@@ -80,5 +85,5 @@ func (w *Whiskey) Start() {
 	<-sc
 
 	// Cleanly close down the Discord session.
-	w.S.Close()
+	whiskey.S.Close()
 }

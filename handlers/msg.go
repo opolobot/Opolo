@@ -19,8 +19,7 @@ func MsgCreate(w *lib.Whiskey) func(s *discordgo.Session, m *discordgo.MessageCr
 		startTime := time.Now()
 		defer (func() {
 			if r := recover(); r != nil {
-				log.Printf("Panic in message event! %v", r)
-				w.SendError(fmt.Sprintf(":rotating_light: **Panic in message event!** @everyone\n```%v```", r))
+				w.SendError(fmt.Errorf("Panic in message event!\n%v", r))
 			}
 		})()
 
