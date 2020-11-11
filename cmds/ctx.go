@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/zorbyte/whiskey/args"
-	"github.com/zorbyte/whiskey/utils"
-	"github.com/zorbyte/whiskey/utils/msgcol"
+	"github.com/TeamWhiskey/whiskey/args"
+	"github.com/TeamWhiskey/whiskey/utils"
+	"github.com/TeamWhiskey/whiskey/utils/msgcol"
 )
 
 // Context is the message context used for command execution

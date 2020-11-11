@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/zorbyte/whiskey/cmds"
+	"github.com/TeamWhiskey/whiskey/cmds"
 )
 
 func init() {

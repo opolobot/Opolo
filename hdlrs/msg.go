@@ -2,8 +2,8 @@ package hdlrs
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/zorbyte/whiskey/cmds"
-	"github.com/zorbyte/whiskey/utils/msgcol"
+	"github.com/TeamWhiskey/whiskey/cmds"
+	"github.com/TeamWhiskey/whiskey/utils/msgcol"
 )
 
 // MessageCreate event.

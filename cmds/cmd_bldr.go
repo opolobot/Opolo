@@ -1,6 +1,6 @@
 package cmds
 
-import "github.com/zorbyte/whiskey/args"
+import "github.com/TeamWhiskey/whiskey/args"
 
 // CommandBuilder ensures easy command creation.
 type CommandBuilder struct {

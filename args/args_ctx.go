@@ -2,7 +2,7 @@ package args
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/zorbyte/whiskey/utils"
+	"github.com/TeamWhiskey/whiskey/utils"
 )
 
 // ArgumentsContext is information about the arguments currently in use for this command.

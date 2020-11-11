@@ -1,6 +1,6 @@
 package core
 
-import "github.com/zorbyte/whiskey/cmds"
+import "github.com/TeamWhiskey/whiskey/cmds"
 
 // Category for the core commands.
 var Category *cmds.CommandCategory

@@ -8,11 +8,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/TeamWhiskey/whiskey/args"
+	"github.com/TeamWhiskey/whiskey/utils"
 	"github.com/acomagu/trie"
 	"github.com/bwmarrin/discordgo"
 	"github.com/texttheater/golang-levenshtein/levenshtein"
-	"github.com/zorbyte/whiskey/args"
-	"github.com/zorbyte/whiskey/utils"
 )
 
 var stringSplitter = regexp.MustCompile(" +")
@@ -40,6 +40,7 @@ func (cmdUI *CommandUI) AddCategory(cmdCat *CommandCategory) {
 	log.Printf("Registering category %v\n", cmdCat.name)
 
 	helpOutputs := make(map[string]string)
+	// TODO(@zorbyte) Ensure category ordering.
 	cmdUI.HelpOutputs[cmdCat.DisplayName()] = &helpOutputs
 	for _, cmd := range cmdCat.cmds {
 		helpOutputs[cmd.Name] = generateHelpStr(cmd)
@@ -90,7 +91,7 @@ func (cmdUI *CommandUI) Dispatch(session *discordgo.Session, msg *discordgo.Mess
 	if cmd == nil {
 		closest, distance := cmdUI.FindClosestCmdMatch(cmdCallKey)
 		if distance <= 2 && distance != 0 {
-			ctx.Send(fmt.Sprintf("**:question: ~ Did you mean `%v`?**", config.Prefix + closest))
+			ctx.Send(fmt.Sprintf("**:question: ~ Did you mean `%v`?**", config.Prefix+closest))
 		}
 	} else {
 		ctx.Cmd = cmd
@@ -128,7 +129,7 @@ func (cmdUI *CommandUI) Dispatch(session *discordgo.Session, msg *discordgo.Mess
 
 			log.Printf("Time for command execution: %v", time.Since(startTime))
 
-			// TODO(@zorbyte): Does this need a goroutine?
+			// TODO(@TeamWhiskey): Does this need a goroutine?
 			// Consider enabling this.
 			// go ctx.CleanUp()
 		}

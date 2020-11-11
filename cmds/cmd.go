@@ -3,7 +3,7 @@ package cmds
 import (
 	"strings"
 
-	"github.com/zorbyte/whiskey/args"
+	"github.com/TeamWhiskey/whiskey/args"
 )
 
 // NextFunc runs the next middleware in the chain.

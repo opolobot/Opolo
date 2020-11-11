@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/zorbyte/whiskey/cmds"
+	"github.com/TeamWhiskey/whiskey/cmds"
 )
 
 func init() {

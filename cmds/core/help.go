@@ -3,9 +3,9 @@ package core
 import (
 	"strings"
 
-	"github.com/zorbyte/whiskey/args"
-	"github.com/zorbyte/whiskey/cmds"
-	"github.com/zorbyte/whiskey/utils"
+	"github.com/TeamWhiskey/whiskey/args"
+	"github.com/TeamWhiskey/whiskey/cmds"
+	"github.com/TeamWhiskey/whiskey/utils"
 )
 
 var config *utils.Config
@@ -70,6 +70,7 @@ func buildLookupHelp(helpStrBldr *strings.Builder, cmd *cmds.Command) {
 
 func buildRegularHelp(helpStrBldr *strings.Builder) {
 	for category, cmds := range cmdUI.HelpOutputs {
+
 		helpStrBldr.WriteString(category)
 		helpStrBldr.WriteString("\n\n")
 		for _, cmdHelpStr := range *cmds {

@@ -3,7 +3,7 @@ package core
 import (
 	"fmt"
 
-	"github.com/zorbyte/whiskey/cmds"
+	"github.com/TeamWhiskey/whiskey/cmds"
 )
 
 const teamWhiskeyGithub string = "https://github.com/TeamWhiskey"

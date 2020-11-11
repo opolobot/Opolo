@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/zorbyte/whiskey/args"
-	"github.com/zorbyte/whiskey/args/parsers"
-	"github.com/zorbyte/whiskey/cmds"
+	"github.com/TeamWhiskey/whiskey/args"
+	"github.com/TeamWhiskey/whiskey/args/parsers"
+	"github.com/TeamWhiskey/whiskey/cmds"
 )
 
 func init() {

@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/zorbyte/whiskey/utils"
+	"github.com/TeamWhiskey/whiskey/utils"
 )
 
 // Ready event.
