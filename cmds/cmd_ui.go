@@ -32,7 +32,8 @@ type CommandUI struct {
 	//	   "command name": "help string"
 	//   }
 	// }
-	HelpOutputs map[string]*map[string]string
+	HelpOutputs         map[string]*map[string]string
+	NameAndDisplayNames map[string]string
 }
 
 // AddCategory adds a command category and registers all of its commands.
@@ -40,8 +41,8 @@ func (cmdUI *CommandUI) AddCategory(cmdCat *CommandCategory) {
 	log.Printf("Registering category %v\n", cmdCat.name)
 
 	helpOutputs := make(map[string]string)
-	// TODO(@zorbyte) Ensure category ordering.
 	cmdUI.HelpOutputs[cmdCat.DisplayName()] = &helpOutputs
+	cmdUI.NameAndDisplayNames[cmdCat.name] = cmdCat.DisplayName()
 	for _, cmd := range cmdCat.cmds {
 		helpOutputs[cmd.Name] = generateHelpStr(cmd)
 		cmdUI.addCommand(cmd)
@@ -67,7 +68,7 @@ func (cmdUI *CommandUI) Dispatch(session *discordgo.Session, msg *discordgo.Mess
 		return nil
 	}
 
-	cmdStr := strings.TrimSpace(msg.Content)[len(config.Prefix):]
+	cmdStr := strings.TrimSpace(strings.ToLower(msg.Content))[len(config.Prefix):]
 
 	cmdSegs := stringSplitter.Split(cmdStr, -1)
 	cmdCallKey := cmdSegs[0]
@@ -241,6 +242,7 @@ func newCommandUI() *CommandUI {
 		aliases: make(map[string]string),
 		rawCmds: make(map[string]*Command),
 
-		HelpOutputs: make(map[string]*map[string]string),
+		HelpOutputs:         make(map[string]*map[string]string),
+		NameAndDisplayNames: make(map[string]string),
 	}
 }

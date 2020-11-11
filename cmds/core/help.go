@@ -1,6 +1,7 @@
 package core
 
 import (
+	"sort"
 	"strings"
 
 	"github.com/TeamWhiskey/whiskey/args"
@@ -69,11 +70,26 @@ func buildLookupHelp(helpStrBldr *strings.Builder, cmd *cmds.Command) {
 }
 
 func buildRegularHelp(helpStrBldr *strings.Builder) {
-	for category, cmds := range cmdUI.HelpOutputs {
+	var keys []string
+	for key := range cmdUI.NameAndDisplayNames {
+		keys = append(keys, key)
+	}
 
-		helpStrBldr.WriteString(category)
+	sort.Strings(keys)
+	for _, key := range keys {
+		displayName := cmdUI.NameAndDisplayNames[key]
+		category := cmdUI.HelpOutputs[displayName]
+		helpStrBldr.WriteString(displayName)
 		helpStrBldr.WriteString("\n\n")
-		for _, cmdHelpStr := range *cmds {
+
+		var cmdKeys []string
+		for key := range *category {
+			cmdKeys = append(cmdKeys, key)
+		}
+
+		sort.Strings(cmdKeys)
+		for _, cmdKey := range cmdKeys {
+			cmdHelpStr := (*category)[cmdKey]
 			finaliseCmdHelpStr(cmdHelpStr, config.Prefix, helpStrBldr)
 		}
 	}
