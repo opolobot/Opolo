@@ -1,4 +1,4 @@
-package cmds
+package args
 
 import "fmt"
 
@@ -7,32 +7,32 @@ type ArgumentParser func(rawArgument string) (interface{}, error)
 
 // ArgumentCodec is information about an argument and how to process it.
 type ArgumentCodec struct {
-	name      string
-	extraInfo string
-	parser    ArgumentParser
-	greedy    bool
-	required  bool
+	Name      string
+	ExtraInfo string
+	Parser    ArgumentParser
+	Greedy    bool
+	Required  bool
 }
 
 // DisplayName is the user friendly appearence of an argument.
 func (codec *ArgumentCodec) DisplayName() string {
 	var container string
-	if codec.required {
+	if codec.Required {
 		container = "<%v>"
 	} else {
 		container = "[%v]"
 	}
 
 	var containerValue string
-	if codec.greedy {
-		containerValue = "..." + codec.name
+	if codec.Greedy {
+		containerValue = "..." + codec.Name
 	} else {
-		containerValue = codec.name
+		containerValue = codec.Name
 	}
 
 	// Useful for arguments that appear as <someInt (<=500)>
-	if codec.extraInfo != "" {
-		containerValue = containerValue + " (" + codec.extraInfo + ")"
+	if codec.ExtraInfo != "" {
+		containerValue = containerValue + " (" + codec.ExtraInfo + ")"
 	}
 
 	return fmt.Sprintf(container, containerValue)

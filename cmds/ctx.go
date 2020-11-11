@@ -3,29 +3,28 @@ package cmds
 import (
 	"errors"
 	"log"
+	"runtime/debug"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/zorbyte/whiskey/lib"
+	"github.com/zorbyte/whiskey/args"
+	"github.com/zorbyte/whiskey/utils"
+	"github.com/zorbyte/whiskey/utils/msgcol"
 )
 
 // Context is the message context used for command execution
 type Context struct {
-	Whiskey *lib.Whiskey
 	Session *discordgo.Session
-	Msg *discordgo.Message
-	Cmd *Command
+	Msg     *discordgo.Message
+	Cmd     *Command
 
 	lastMsg *discordgo.Message
 
 	// String used to call the command
 	CmdCallKey string
-	Args       []string
+	ArgsCtx    *args.ArgumentsContext
 
 	StartTime time.Time
-
-	// TODO(@zorbyte): Create a db, consider using gorm.
-	DB interface{}
 }
 
 // Send sends a message to the channel the msg came from.
@@ -46,13 +45,32 @@ func (ctx *Context) Edit(content string) (*discordgo.Message, error) {
 	return m, err
 }
 
-// Delete deletes the last recently sent message.
-func (ctx *Context) Delete() error {
-	if ctx.lastMsg == nil {
+// Delete deletes the last recently sent message or the supplied one.
+func (ctx *Context) Delete(msg ...*discordgo.Message) error {
+	msgSupplied := len(msg) > 0
+	if msgSupplied && ctx.lastMsg == nil {
 		return errors.New("Tried to delete a message that does not exist")
 	}
 
-	return ctx.Session.ChannelMessageDelete(ctx.lastMsg.ChannelID, ctx.lastMsg.ID)
+	var ID string
+	var chanID string
+	if msgSupplied {
+		ID = msg[0].ID
+		chanID = msg[0].ChannelID
+	} else {
+		ID = ctx.lastMsg.ID
+		chanID = ctx.lastMsg.ChannelID
+	}
+
+	return ctx.Session.ChannelMessageDelete(chanID, ID)
+}
+
+// CleanUp deletes the last recently sent message.
+func (ctx *Context) CleanUp() {
+	if ctx.lastMsg != nil {
+		time.Sleep(10 * time.Second)
+		ctx.Session.ChannelMessageDelete(ctx.lastMsg.ChannelID, ctx.lastMsg.ID)
+	}
 }
 
 // Collect collects messages.
@@ -69,23 +87,27 @@ func (ctx *Context) Collect(time time.Duration, amnt ...int) (chan *discordgo.Me
 		amntToPurge = amnt[0]
 	}
 
-	col := ctx.Whiskey.Collect(ctx.Msg.ChannelID, time, amntToPurge)
+	colMnger := msgcol.GetCollectionManager()
+	col := colMnger.NewCollector(ctx.Msg.ChannelID, time, amntToPurge)
 	return col.Msgs, nil
 }
 
 // SendError reports an error to the err channel and to the user
 func (ctx *Context) SendError(err error) {
 	cmdName := (func() string {
-		if ctx.Cmd.name != "" {
-			return ctx.Cmd.name
+		if ctx.Cmd != nil && ctx.Cmd.Name != "" {
+			return ctx.Cmd.Name
 		}
 
 		return "N/A"
 	})()
 
 	errTxt := ":rotating_light: An error occurred while handling the command `" + cmdName + "`:\n```" + err.Error() + "```"
-	ctx.Session.ChannelMessageSend(ctx.Msg.ChannelID, errTxt+"\n\nThe error has been reported")
-	ctx.Whiskey.SendError(errors.New(errTxt))
-
-	log.Println("An error occurred while handling the command "+cmdName+":", err)
+	ctx.Session.ChannelMessageSend(ctx.Msg.ChannelID, errTxt+"\nThe error has been reported")
+	config := utils.GetConfig()
+	if config.LogChannel != "" {
+		stacktrace := string(debug.Stack())
+		log.Print("An error occurred while handling the command "+cmdName+":\n"+err.Error()+"\n"+stacktrace)
+		ctx.Session.ChannelMessageSend(config.LogChannel, errTxt + "\n\n**Stacktrace**\n```" + stacktrace + "```")
+	}
 }

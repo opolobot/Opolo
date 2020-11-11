@@ -1,6 +1,10 @@
 package cmds
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/zorbyte/whiskey/args"
+)
 
 // NextFunc runs the next middleware in the chain.
 // Optionally supply an error to cancel the chain and report an error.
@@ -11,12 +15,15 @@ type CommandMiddleware func(ctx *Context, next NextFunc)
 
 // Command is a command
 type Command struct {
-	middleware     []CommandMiddleware
-	name        string
-	aliases     []string
-	description string
-	argCodecs   []*ArgumentCodec
-	enabled     bool
+	Name        string
+	Aliases     []string
+	Description string
+
+	Category *CommandCategory
+
+	stack []CommandMiddleware
+	argCodecs  []*args.ArgumentCodec
+	enabled    bool
 }
 
 // Usage returns how to use the command

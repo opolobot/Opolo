@@ -1,4 +1,4 @@
-package cmds
+package args
 
 import "fmt"
 
@@ -8,13 +8,14 @@ const (
 	invalidArgument
 )
 
-type parsingError struct {
+// ParsingError is an error in argument parsing.
+type ParsingError struct {
 	ErrorType      int
 	wrapped        error
 	argDisplayName string
 }
 
-func (err *parsingError) errorStrToFormat() string {
+func (err *ParsingError) errorStrToFormat() string {
 	switch err.ErrorType {
 	case requiredArgumentMissing:
 		return "An invalid argument for %v was supplied"
@@ -27,17 +28,17 @@ func (err *parsingError) errorStrToFormat() string {
 	}
 }
 
-func (err *parsingError) Error() string {
+func (err *ParsingError) Error() string {
 	return fmt.Sprintf(err.errorStrToFormat(), "`"+err.argDisplayName+"`")
 }
 
-func (err *parsingError) Unwrap() error {
+func (err *ParsingError) Unwrap() error {
 	return err.wrapped
 }
 
 // NewParsingError creates an argument parsing error thats user friendly.
 func NewParsingError(argDisplayName string, errorType int, wrapped ...error) error {
-	err := &parsingError{
+	err := &ParsingError{
 		argDisplayName: argDisplayName,
 		ErrorType:      errorType,
 		wrapped:        nil,

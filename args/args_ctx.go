@@ -1,6 +1,9 @@
-package cmds
+package args
 
-import "github.com/zorbyte/whiskey/lib"
+import (
+	"github.com/bwmarrin/discordgo"
+	"github.com/zorbyte/whiskey/utils"
+)
 
 // ArgumentsContext is information about the arguments currently in use for this command.
 type ArgumentsContext struct {
@@ -10,35 +13,42 @@ type ArgumentsContext struct {
 }
 
 // NewArgumentsContext processes the raw arguments into the Args map and creates an arguments context instance.
-func NewArgumentsContext(whiskey *lib.Whiskey, codecs []*ArgumentCodec, rawArgs []string) (*ArgumentsContext, error) {
+func NewArgumentsContext(session *discordgo.Session, codecs []*ArgumentCodec, rawArgs []string) (*ArgumentsContext, error) {
 	args := make(map[string]interface{})
 	amntProcessed := 0
 	finished := false
 	for _, codec := range codecs {
 		finished = amntProcessed > len(rawArgs)-1
 		if finished {
-			if codec.required {
-				if codec.greedy {
+			if codec.Required {
+				if codec.Greedy {
 					return nil, NewParsingError(codec.DisplayName(), insufficientArguments)
 				}
 
 				return nil, NewParsingError(codec.DisplayName(), requiredArgumentMissing)
 			}
-		}
+		} else {
+			rawArg := rawArgs[amntProcessed]
 
-		rawArg := rawArgs[amntProcessed]
-		parsed, err := codec.parser(rawArg)
-		if err != nil {
-			if parsingError, ok := err.(*parsingError); ok {
-				return nil, parsingError
+			var parsed interface{}
+			if codec.Parser == nil {
+				parsed = rawArg
+			} else {
+				var err error
+				parsed, err = codec.Parser(rawArg)
+				if err != nil {
+					if parsingError, ok := err.(*ParsingError); ok {
+						return nil, parsingError
+					}
+	
+					utils.SendError(session, err)
+					return nil, NewParsingError(codec.DisplayName(), -1, err)
+				}
 			}
-
-			whiskey.SendError(err)
-			return nil, NewParsingError(codec.DisplayName(), -1, err)
+	
+			args[codec.Name] = parsed
+			amntProcessed++
 		}
-
-		args[codec.name] = parsed
-		amntProcessed++
 	}
 
 	argsCtx := &ArgumentsContext{

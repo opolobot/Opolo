@@ -9,10 +9,12 @@ type CommandCategory struct {
 
 // AddCommand adds a command to the category.
 func (cmdCat *CommandCategory) AddCommand(cmd *Command) {
+	cmd.Category = cmdCat
 	cmdCat.cmds = append(cmdCat.cmds, cmd)
 }
 
-func (cmdCat *CommandCategory) displayName() string {
+// DisplayName provides a string suitable for the help menu.
+func (cmdCat *CommandCategory) DisplayName() string {
 	return cmdCat.emoji + " __**" + cmdCat.name + "**__"
 }
 
