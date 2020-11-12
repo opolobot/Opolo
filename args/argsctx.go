@@ -1,8 +1,8 @@
 package args
 
 import (
-	"github.com/bwmarrin/discordgo"
 	"github.com/TeamWhiskey/whiskey/utils"
+	"github.com/bwmarrin/discordgo"
 )
 
 // ArgumentsContext is information about the arguments currently in use for this command.
@@ -40,12 +40,12 @@ func NewArgumentsContext(session *discordgo.Session, codecs []*ArgumentCodec, ra
 					if parsingError, ok := err.(*ParsingError); ok {
 						return nil, parsingError
 					}
-	
+
 					utils.SendError(session, err)
 					return nil, NewParsingError(codec.DisplayName(), -1, err)
 				}
 			}
-	
+
 			args[codec.Name] = parsed
 			amntProcessed++
 		}

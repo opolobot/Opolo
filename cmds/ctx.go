@@ -4,12 +4,24 @@ import (
 	"errors"
 	"log"
 	"runtime/debug"
+	"strings"
 	"time"
 
-	"github.com/bwmarrin/discordgo"
 	"github.com/TeamWhiskey/whiskey/args"
 	"github.com/TeamWhiskey/whiskey/utils"
 	"github.com/TeamWhiskey/whiskey/utils/msgcol"
+	"github.com/bwmarrin/discordgo"
+)
+
+const (
+	// PromptAccept for acceptance of a prompt.
+	PromptAccept = iota
+
+	// PromptDeny for denial of a prompt.
+	PromptDeny
+
+	// PromptTimeout is when the prompt times out.
+	PromptTimeout
 )
 
 // Context is the message context used for command execution
@@ -28,9 +40,17 @@ type Context struct {
 }
 
 // Send sends a message to the channel the msg came from.
-func (ctx *Context) Send(content string) (*discordgo.Message, error) {
+func (ctx *Context) Send(content string, deleteTime ...time.Duration) (*discordgo.Message, error) {
 	m, err := ctx.Session.ChannelMessageSend(ctx.Msg.ChannelID, content)
 	ctx.lastMsg = m
+
+	if len(deleteTime) > 0 {
+		go (func() {
+			time.Sleep(deleteTime[0])
+			ctx.Delete(m)
+		})()
+	}
+
 	return m, err
 }
 
@@ -63,6 +83,49 @@ func (ctx *Context) Delete(msg ...*discordgo.Message) error {
 	}
 
 	return ctx.Session.ChannelMessageDelete(chanID, ID)
+}
+
+// Prompt sends a prompt to accept or deny within 10 seconds.
+func (ctx *Context) Prompt(prompt string) (int, error) {
+	_, err := ctx.Send(prompt + " This action will cancel in 10 seconds. [y/N]")
+	if err != nil {
+		return PromptDeny, err
+	}
+
+	msgs, err := ctx.Collect(10 * time.Second)
+	if err != nil {
+		return PromptDeny, err
+	}
+
+	accepted := false
+	denied := false
+	for msg := range msgs {
+		switch strings.ToLower(msg.Content) {
+		case "y":
+			accepted = true
+			break
+		case "n":
+			denied = true
+			break
+		}
+	}
+
+	if err = ctx.Delete(); err != nil {
+		return PromptDeny, err
+	}
+
+	if !accepted {
+		if denied {
+			ctx.Send("Cancelling purge.")
+
+			return PromptDeny, nil
+		}
+
+		ctx.Send("Timed out.")
+		return PromptTimeout, nil
+	}
+
+	return PromptAccept, nil
 }
 
 // CleanUp deletes the last recently sent message.
@@ -107,7 +170,7 @@ func (ctx *Context) SendError(err error) {
 	config := utils.GetConfig()
 	if config.LogChannel != "" {
 		stacktrace := string(debug.Stack())
-		log.Print("An error occurred while handling the command "+cmdName+":\n"+err.Error()+"\n"+stacktrace)
-		ctx.Session.ChannelMessageSend(config.LogChannel, errTxt + "\n\n**Stacktrace**\n```" + stacktrace + "```")
+		log.Print("An error occurred while handling the command " + cmdName + ":\n" + err.Error() + "\n" + stacktrace)
+		ctx.Session.ChannelMessageSend(config.LogChannel, errTxt+"\n\n**Stacktrace**\n```"+stacktrace+"```")
 	}
 }

@@ -3,18 +3,21 @@ package mod
 import (
 	"fmt"
 	"math"
-	"strings"
 	"time"
 
 	"github.com/TeamWhiskey/whiskey/args"
 	"github.com/TeamWhiskey/whiskey/args/parsers"
 	"github.com/TeamWhiskey/whiskey/cmds"
+	"github.com/TeamWhiskey/whiskey/utils/mdlwr"
+	"github.com/bwmarrin/discordgo"
 )
 
 func init() {
 	cmdBldr := cmds.NewCommandBuilder()
 	cmdBldr.Name("purge")
 	cmdBldr.Description("Purges the desired amount of messages from the channel")
+	cmdBldr.Use(mdlwr.PermCheck(discordgo.PermissionManageMessages, "ManageMessages"))
+	cmdBldr.Use(checkValidAmnt)
 	cmdBldr.Use(purge)
 	cmdBldr.Args(&args.ArgumentCodec{
 		Name:      "amnt",
@@ -26,54 +29,32 @@ func init() {
 	Category.AddCommand(cmdBldr.Build())
 }
 
-func purge(ctx *cmds.Context, next cmds.NextFunc) {
+func checkValidAmnt(ctx *cmds.Context, next cmds.NextFunc) {
 	amnt := ctx.ArgsCtx.Args["amnt"].(int)
 
 	if amnt > 500 {
 		ctx.Send("Amount can not be greater than 500")
+		return
+	}
+
+	next()
+}
+
+func purge(ctx *cmds.Context, next cmds.NextFunc) {
+	amnt := ctx.ArgsCtx.Args["amnt"].(int)
+
+	res, err := ctx.Prompt(fmt.Sprintf("Are you sure you wish to delete %v msgs?", amnt))
+	if err != nil {
+		next(err)
+		return
+	}
+
+	if res == cmds.PromptTimeout {
+		ctx.Send("Timed out.", 10*time.Second)
 		next()
 		return
-	}
-
-	_, err := ctx.Send(fmt.Sprintf("Are you sure you wish to delete %v msgs? This action will cancel in 10 seconds. [y/N]", amnt))
-	if err != nil {
-		next(err)
-		return
-	}
-
-	msgs, err := ctx.Collect(10 * time.Second)
-	if err != nil {
-		next(err)
-		return
-	}
-
-	accepted := false
-	denied := false
-	for msg := range msgs {
-		switch strings.ToLower(msg.Content) {
-		case "y":
-			accepted = true
-			break
-		case "n":
-			denied = true
-			break
-		}
-	}
-
-	err = ctx.Delete()
-	if err != nil {
-		next(err)
-		return
-	}
-
-	if !accepted {
-		if denied {
-			ctx.Send("Cancelling purge.")
-			next()
-			return
-		}
-
-		ctx.Send("Timed out.")
+	} else if res == cmds.PromptDeny {
+		ctx.Send("Cancelled.", 10*time.Second)
 		next()
 		return
 	}
