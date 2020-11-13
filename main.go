@@ -9,15 +9,14 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/TeamWhiskey/whiskey/utils"
+	"github.com/TeamWhiskey/whiskey/util"
 )
 
 func main() {
 	// Seed math/rand
 	rand.Seed(time.Now().UnixNano())
 
-	log.Printf("Loading config file at %v\n", utils.ConfigFileName)
-	config := utils.GetConfig()
+	config := util.GetConfig()
 
 	session, err := discordgo.New("Bot " + config.Token)
 	if err != nil {
