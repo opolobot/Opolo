@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"regexp"
 	"strings"
@@ -23,7 +22,7 @@ func Dispatch(session *discordgo.Session, msg *discordgo.Message) NextFunc {
 		return nil
 	}
 
-	callKey, rawArgs := parseContent(msg.Content, prefix)
+	callKey, rawArgs := parseContent(prefix, msg.Content)
 
 	ctx := &Context{
 		Session: session,
@@ -83,14 +82,9 @@ func parseArgs(ctx *Context) (success bool) {
 	ctx.Args, err = arg.Parse(ctx.Cmd.args, ctx.RawArgs)
 	if success = err == nil; !success {
 		if pErr, ok := err.(*arg.ParsingError); ok {
-			err = errors.Unwrap(pErr)
-			if err != nil {
-				ctx.SendError(err)
-			} else if pErr.ErrorType != arg.InternalParsingError {
-				ctx.Send(pErr.UIError())
-			} else {
-				ctx.SendError(pErr)
-			}
+			ctx.Send(pErr.UIError())
+		} else {
+			ctx.SendError(err)
 		}
 	}
 

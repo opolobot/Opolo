@@ -10,14 +10,14 @@ import (
 )
 
 func registerHandlers(session *discordgo.Session) {
-	session.AddHandler(hdlrs.Ready)
-	session.AddHandler(hdlrs.MessageCreate)
+	session.AddHandler(hdlr.Ready)
+	session.AddHandler(hdlr.MessageCreate)
 }
 
 func registerCommandCategories() {
-	cmdUI := cmd.GetCommandUI()
-	cmdUI.AddCategory(core.Category)
-	cmdUI.AddCategory(fun.Category)
-	cmdUI.AddCategory(mod.Category)
-	cmdUI.Build()
+	reg := cmd.GetRegistry()
+	reg.AddCategory(core.Category)
+	reg.AddCategory(fun.Category)
+	reg.AddCategory(mod.Category)
+	reg.Populate()
 }

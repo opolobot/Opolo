@@ -3,11 +3,8 @@ package arg
 import "fmt"
 
 const (
-	// InternalParsingError is used when the parser itself fails for a reason unrelated to the data type.
-	InternalParsingError = iota - 1
-
 	// RequiredArgumentMissing is used when a required argument is missing.
-	RequiredArgumentMissing
+	RequiredArgumentMissing = iota
 
 	// InsufficientArguments is used when at least one greedy argument is required.
 	InsufficientArguments
@@ -19,7 +16,6 @@ const (
 // ParsingError is an error in argument transformation.
 type ParsingError struct {
 	ErrorType      int
-	wrapped        error
 	argDisplayName string
 }
 
@@ -45,21 +41,7 @@ func (err *ParsingError) UIError() string {
 	return fmt.Sprintf(err.errorStrToFormat(), "`"+err.argDisplayName+"`")
 }
 
-func (err *ParsingError) Unwrap() error {
-	return err.wrapped
-}
-
 // NewParsingError creates an argument parsing error that's user friendly.
-func NewParsingError(arg *Argument, errorType int, wrapped ...error) *ParsingError {
-	err := &ParsingError{
-		argDisplayName: arg.DisplayName(),
-		ErrorType:      errorType,
-		wrapped:        nil,
-	}
-
-	if len(wrapped) > 0 {
-		err.wrapped = wrapped[0]
-	}
-
-	return err
+func NewParsingError(arg *Argument, errorType int) *ParsingError {
+	return &ParsingError{errorType, arg.DisplayName()}
 }

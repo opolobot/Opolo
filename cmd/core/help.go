@@ -29,9 +29,9 @@ func help(ctx *cmd.Context, next cmd.NextFunc) {
 	// TODO(@zorbyte): Dynamic prefix support.
 	prefix := util.GetConfig().Prefix
 
-	// w!help [cmd] <- Args[]
+	// w!help [cmd] <- RawArgs[0]
 	// get help info on a specific command
-	if len(ctx.Args) > 0 {
+	if len(ctx.RawArgs) > 0 {
 		callKeyArg := ctx.Args["cmd"]
 		if callKeyArg != nil {
 			callKey := callKeyArg.(string)
@@ -77,7 +77,7 @@ func buildRegularHelp(helpStrBldr *strings.Builder, prefix string) {
 		helpStrBldr.WriteString("\n\n")
 
 		var cmdKeys []string
-		var cmdKeysToIdx map[string]int
+		cmdKeysToIdx := make(map[string]int)
 		for idx, cmnd := range cat.Commands {
 			cmdKeys = append(cmdKeys, cmnd.Name)
 			cmdKeysToIdx[cmnd.Name] = idx

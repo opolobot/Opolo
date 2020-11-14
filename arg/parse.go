@@ -10,7 +10,7 @@ import (
 type ParsedArguments = map[string]interface{}
 
 // Parse parses the raw arguments into a map.
-func Parse(args []*Argument, rawArgs []string) (ParsedArguments, *ParsingError) {
+func Parse(args []*Argument, rawArgs []string) (ParsedArguments, error) {
 	parsed := make(ParsedArguments)
 
 	// Index for the raw arguments
@@ -55,14 +55,14 @@ func Parse(args []*Argument, rawArgs []string) (ParsedArguments, *ParsingError) 
 
 // handleArg handles an argument along with its raw one.
 // Will recursively call in the case that an argument is greedy.
-func handleArg(arg *Argument, raw string) (interface{}, *ParsingError) {
+func handleArg(arg *Argument, raw string) (interface{}, error) {
 	if arg.Parser == nil {
 		return raw, nil
 	}
 
 	output, err := arg.parse(raw)
 	if err != nil {
-		return output, NewParsingError(arg, InternalParsingError, err)
+		return output, err
 	}
 
 	return output, nil

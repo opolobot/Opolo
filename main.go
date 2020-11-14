@@ -8,8 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/bwmarrin/discordgo"
 	"github.com/TeamWhiskey/whiskey/util"
+	"github.com/bwmarrin/discordgo"
 )
 
 func main() {

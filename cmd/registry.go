@@ -89,7 +89,9 @@ func (reg *Registry) Populate() {
 // GetRegistry gets the command registry.
 func GetRegistry() *Registry {
 	if regInst == nil {
-		regInst = &Registry{}
+		regInst = &Registry{
+			Categories: make(map[string]*Category),
+		}
 	}
 
 	return regInst
