@@ -46,5 +46,8 @@ func main() {
 	<-sc
 
 	// Cleanly close down the Discord session.
-	session.Close()
+	err = session.Close()
+	if err != nil {
+		log.Fatalf("Failed to close session")
+	}
 }

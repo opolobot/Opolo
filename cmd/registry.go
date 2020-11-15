@@ -39,6 +39,9 @@ func (reg *Registry) addCommand(cmd *Command) {
 // LookupCommand looks up a command using either its name or alias.
 func (reg *Registry) LookupCommand(cmdNameOrAlias string) (*Command, error) {
 	cmdInterface, ok := reg.tree.Trace([]byte(cmdNameOrAlias)).Terminal()
+	if !ok {
+		return nil, nil
+	}
 
 	cmd, ok := cmdInterface.(*Command)
 	if !ok {

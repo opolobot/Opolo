@@ -1,2 +1,5 @@
 config.yml
 whiskey
+__debug_bin
+.vscode
+.idea

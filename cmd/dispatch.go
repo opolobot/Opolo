@@ -23,7 +23,6 @@ func Dispatch(session *discordgo.Session, msg *discordgo.Message) NextFunc {
 	}
 
 	callKey, rawArgs := parseContent(prefix, msg.Content)
-
 	ctx := &Context{
 		Session: session,
 		Msg:     msg,
@@ -63,6 +62,8 @@ func Dispatch(session *discordgo.Session, msg *discordgo.Message) NextFunc {
 		}
 
 		return nextFunc
+	} else {
+		didYouMean(ctx)
 	}
 
 	return nil

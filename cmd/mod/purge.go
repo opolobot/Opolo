@@ -21,7 +21,7 @@ func init() {
 	cmd.Use(purge)
 	cmd.Arg(&arg.Argument{
 		Name:        "amnt",
-		Constraints: "<=500",
+		Constraints: "0<a<=500",
 		Parser:      parsers.ParseInt,
 		Required:    true,
 	})
