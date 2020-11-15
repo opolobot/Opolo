@@ -62,9 +62,9 @@ func Dispatch(session *discordgo.Session, msg *discordgo.Message) NextFunc {
 		}
 
 		return nextFunc
-	} else {
-		didYouMean(ctx)
 	}
+
+	didYouMean(ctx)
 
 	return nil
 }
