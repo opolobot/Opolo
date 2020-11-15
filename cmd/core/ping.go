@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/TeamWhiskey/whiskey/cmd"
 	"github.com/bwmarrin/discordgo"
+	"github.com/zorbyte/whiskey/cmd"
 )
 
 func init() {
@@ -36,7 +36,6 @@ func ping(ctx *cmd.Context, next cmd.NextFunc) {
 		latency *= -1
 	}
 
-	executionTime = executionTime.Round(time.Microsecond)
 	heartbeatTime := ctx.Session.HeartbeatLatency().Round(time.Millisecond).Seconds()
 
 	ctx.Edit(fmt.Sprintf(

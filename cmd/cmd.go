@@ -3,7 +3,7 @@ package cmd
 import (
 	"strings"
 
-	"github.com/TeamWhiskey/whiskey/arg"
+	"github.com/zorbyte/whiskey/arg"
 )
 
 // NextFunc runs the next middleware in the chain.
@@ -53,6 +53,9 @@ func (cmd *Command) usage() string {
 func generateHelp(cmd *Command) string {
 	var cmdHelpStrBldr strings.Builder
 
+	// Use formatting directive for prefix interpolation later.
+	cmdHelpStrBldr.WriteString("**`%v")
+
 	// Name and usage.
 	cmdHelpStrBldr.WriteString(cmd.Name)
 	if usage := cmd.usage(); usage != "" {
@@ -66,13 +69,13 @@ func generateHelp(cmd *Command) string {
 
 	// Description.
 	if cmd.Description != "" {
-		cmdHelpStrBldr.WriteString("\n> **desc ~** ")
+		cmdHelpStrBldr.WriteString("\n**desc ~** ")
 		cmdHelpStrBldr.WriteString(cmd.Description)
 	}
 
 	// Aliases
 	if len(cmd.Aliases) > 0 {
-		cmdHelpStrBldr.WriteString("\n> **aliases ~** ")
+		cmdHelpStrBldr.WriteString("\n**aliases ~** ")
 		cmdHelpStrBldr.WriteString(strings.Join(cmd.Aliases, ", "))
 	}
 

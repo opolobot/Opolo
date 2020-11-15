@@ -1,5 +1,5 @@
 # When using the bot yourself, you need to rename this file to config.yml
 token: "keep this a secret"
 logChannel: "make sure to fill this in, as their is no empty nil value fallback right now"
-prefix: "w!"
+prefix: ";"
 status: "I'm just a beverage"

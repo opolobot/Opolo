@@ -1,12 +1,14 @@
 package core
 
 import (
+	"fmt"
+	"math"
 	"sort"
 	"strings"
 
-	"github.com/TeamWhiskey/whiskey/arg"
-	"github.com/TeamWhiskey/whiskey/cmd"
-	"github.com/TeamWhiskey/whiskey/util"
+	"github.com/zorbyte/whiskey/arg"
+	"github.com/zorbyte/whiskey/cmd"
+	"github.com/zorbyte/whiskey/util"
 )
 
 func init() {
@@ -24,10 +26,16 @@ func init() {
 
 func help(ctx *cmd.Context, next cmd.NextFunc) {
 	var helpStrBldr strings.Builder
-	helpStrBldr.WriteString("**Whiskey (development) help**\n\n")
+	helpMenuName := "**Whiskey help**"
+	helpStrBldr.WriteString(helpMenuName)
 
 	// TODO(@zorbyte): Dynamic prefix support.
 	prefix := util.GetConfig().Prefix
+
+	dividerLen := float64(len(helpMenuName)) - 4.0
+
+	writeGap(&helpStrBldr)
+	writeDivider(&helpStrBldr, dividerLen)
 
 	// w!help [cmd] <- RawArgs[0]
 	// get help info on a specific command
@@ -53,14 +61,29 @@ func help(ctx *cmd.Context, next cmd.NextFunc) {
 		buildRegularHelp(&helpStrBldr, prefix)
 	}
 
-	ctx.Send(helpStrBldr.String())
+	writeDivider(&helpStrBldr, dividerLen)
+	helpStrBldr.WriteString(fmt.Sprintf("**prefix  ~  **`%v`", prefix))
+	writeDivider(&helpStrBldr, dividerLen)
+	helpStrBldr.WriteString("*Whiskey ")
+
+	_, _ = ctx.Send(helpStrBldr.String())
 	next()
+}
+
+func writeGap(helpStrBldr *strings.Builder) {
+	helpStrBldr.WriteString("\n\n")
+}
+
+func writeDivider(helpStrBldr *strings.Builder, dividerLen float64) {
+	divider := "~~" + strings.Repeat("-", int(math.Floor(dividerLen * 1.2))) + "~~"
+	helpStrBldr.WriteString(divider)
+	writeGap(helpStrBldr)
 }
 
 func buildLookupHelp(helpStrBldr *strings.Builder, prefix string, cmnd *cmd.Command) {
 	helpStrBldr.WriteString(cmnd.Category.DisplayName())
-	helpStrBldr.WriteString("\n\n")
-	finaliseCmdHelpStr(cmnd.Help(), prefix, helpStrBldr)
+	helpStrBldr.WriteString(" **~** ")
+	helpStrBldr.WriteString(fmt.Sprintf(cmnd.Help(), prefix))
 }
 
 func buildRegularHelp(helpStrBldr *strings.Builder, prefix string) {
@@ -71,30 +94,19 @@ func buildRegularHelp(helpStrBldr *strings.Builder, prefix string) {
 	}
 
 	sort.Strings(keys)
+	sort.Reverse(sort.StringSlice(keys))
 	for _, key := range keys {
 		cat := reg.Categories[key]
 		helpStrBldr.WriteString(cat.DisplayName())
-		helpStrBldr.WriteString("\n\n")
+		helpStrBldr.WriteString(" **~** ")
 
 		var cmdKeys []string
-		cmdKeysToIdx := make(map[string]int)
-		for idx, cmnd := range cat.Commands {
-			cmdKeys = append(cmdKeys, cmnd.Name)
-			cmdKeysToIdx[cmnd.Name] = idx
+		for _, cmnd := range cat.Commands {
+			cmdKeys = append(cmdKeys, "`" + cmnd.Name + "`")
 		}
 
 		sort.Strings(cmdKeys)
-		for _, cmdKey := range cmdKeys {
-			idx := cmdKeysToIdx[cmdKey]
-			cmnd := cat.Commands[idx]
-			finaliseCmdHelpStr(cmnd.Help(), prefix, helpStrBldr)
-		}
+		helpStrBldr.WriteString(strings.Join(cmdKeys, ", "))
+		writeGap(helpStrBldr)
 	}
-}
-
-func finaliseCmdHelpStr(cmdHelpStr string, prefix string, strBldr *strings.Builder) {
-	strBldr.WriteString("> **`")
-	strBldr.WriteString(prefix)
-	strBldr.WriteString(cmdHelpStr)
-	strBldr.WriteString("\n\n")
 }

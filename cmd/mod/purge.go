@@ -5,11 +5,11 @@ import (
 	"math"
 	"time"
 
-	"github.com/TeamWhiskey/whiskey/arg"
-	"github.com/TeamWhiskey/whiskey/arg/parsers"
-	"github.com/TeamWhiskey/whiskey/cmd"
-	"github.com/TeamWhiskey/whiskey/util/mdlw"
 	"github.com/bwmarrin/discordgo"
+	"github.com/zorbyte/whiskey/arg"
+	"github.com/zorbyte/whiskey/arg/parsers"
+	"github.com/zorbyte/whiskey/cmd"
+	"github.com/zorbyte/whiskey/util/mdlw"
 )
 
 func init() {

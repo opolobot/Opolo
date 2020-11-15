@@ -3,10 +3,10 @@ package core
 import (
 	"fmt"
 
-	"github.com/TeamWhiskey/whiskey/cmd"
+	"github.com/zorbyte/whiskey/cmd"
 )
 
-const teamWhiskeyGithub string = "https://github.com/TeamWhiskey"
+const teamWhiskeyGithub string = "https://github.com/zorbyte/Whiskey"
 
 func init() {
 	cmd := cmd.New()
@@ -19,8 +19,8 @@ func init() {
 
 func about(ctx *cmd.Context, next cmd.NextFunc) {
 	ctx.Send(fmt.Sprintf(
-		"**Whiskey is a bot by :tumbler_glass: TeamWhiskey\n\nfind us on github ~ :octopus: %v**"+
-			"\n\n**the ~~dipsos~~ team**\n\t\\~ zorbyte (Founder)\n\t\\~ MountainWhale\n\t\\~ FardinDaDev",
+		"**Whiskey; Just a beverage\n\nour github repo~ :octopus: %v**"+
+			"\n\n**the ~~dipsos~~ devs**\n\t\\~ zorbyte (https://github.com/zorbyte)\n\t\\~ itjk (https://github.com/itjk",
 		teamWhiskeyGithub,
 	))
 

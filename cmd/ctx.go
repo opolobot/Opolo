@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TeamWhiskey/whiskey/util"
-	"github.com/TeamWhiskey/whiskey/util/msgcol"
 	"github.com/bwmarrin/discordgo"
+	"github.com/zorbyte/whiskey/util"
+	"github.com/zorbyte/whiskey/util/msgcol"
 )
 
 const (

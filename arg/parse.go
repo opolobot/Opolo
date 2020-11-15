@@ -3,7 +3,7 @@ package arg
 import (
 	"reflect"
 
-	"github.com/TeamWhiskey/whiskey/util"
+	"github.com/zorbyte/whiskey/util"
 )
 
 // ParsedArguments is a map of arguments using the name of the argument as the key.

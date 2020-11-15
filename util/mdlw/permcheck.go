@@ -3,8 +3,8 @@ package mdlw
 import (
 	"fmt"
 
-	"github.com/TeamWhiskey/whiskey/cmd"
-	"github.com/TeamWhiskey/whiskey/util"
+	"github.com/zorbyte/whiskey/cmd"
+	"github.com/zorbyte/whiskey/util"
 )
 
 // PermCheck is a middleware for checking permissions.

@@ -3,7 +3,7 @@ package parsers
 import (
 	"strconv"
 
-	"github.com/TeamWhiskey/whiskey/arg"
+	"github.com/zorbyte/whiskey/arg"
 )
 
 // ParseInt parses an integer argument.

@@ -16,7 +16,7 @@ func (cat *Category) AddCommand(cmd *Command) {
 
 // DisplayName provides a string suitable for the help menu.
 func (cat *Category) DisplayName() string {
-	return cat.emoji + " __**" + cat.name + "**__"
+	return "**" + cat.name + "**"
 }
 
 // NewCategory creates new command category.

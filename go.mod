@@ -1,4 +1,4 @@
-module github.com/TeamWhiskey/whiskey
+module github.com/zorbyte/whiskey
 
 go 1.15
 

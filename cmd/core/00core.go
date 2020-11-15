@@ -1,6 +1,6 @@
 package core
 
-import "github.com/TeamWhiskey/whiskey/cmd"
+import "github.com/zorbyte/whiskey/cmd"
 
 // Category for the core commands.
-var Category = cmd.NewCategory("Whiskey core", ":tumbler_glass:")
+var Category = cmd.NewCategory("core", "tumbler_glass")

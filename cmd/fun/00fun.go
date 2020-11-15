@@ -1,6 +1,6 @@
 package fun
 
-import "github.com/TeamWhiskey/whiskey/cmd"
+import "github.com/zorbyte/whiskey/cmd"
 
 // Category for the fun commands.
-var Category =  cmd.NewCategory("Fun", ":tada:")
+var Category =  cmd.NewCategory("fun", "tada")

@@ -1,6 +1,6 @@
 package cmd
 
-import "github.com/TeamWhiskey/whiskey/arg"
+import "github.com/zorbyte/whiskey/arg"
 
 // Builder ensures easy command creation.
 type Builder struct {

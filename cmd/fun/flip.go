@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/TeamWhiskey/whiskey/cmd"
+	"github.com/zorbyte/whiskey/cmd"
 )
 
 func init() {
@@ -29,7 +29,7 @@ func flip(ctx *cmd.Context, next cmd.NextFunc) {
 	})()
 
 	if headsOrTails == "" {
-		next(fmt.Errorf("Failed to choose between heads or tails"))
+		next(fmt.Errorf("failed to choose between heads or tails"))
 	}
 
 	ctx.Send(fmt.Sprintf(":coin: **It's __%v__!**", headsOrTails))

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/TeamWhiskey/whiskey/arg"
-	"github.com/TeamWhiskey/whiskey/util"
 	"github.com/bwmarrin/discordgo"
+	"github.com/zorbyte/whiskey/arg"
+	"github.com/zorbyte/whiskey/util"
 )
 
 var stringSplitter = regexp.MustCompile(" +")
