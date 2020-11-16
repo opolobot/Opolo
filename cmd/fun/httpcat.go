@@ -2,7 +2,6 @@ package fun
 
 import (
 	"math/rand"
-	"time"
 
 	"github.com/zorbyte/whiskey/arg"
 	"github.com/zorbyte/whiskey/cmd"
@@ -53,7 +52,6 @@ func httpCat(code string) string {
 }
 
 func randomFromSlice(slice []string) string {
-	rand.Seed(time.Now().UTC().UnixNano())
 	i := rand.Intn(len(slice))
 	return slice[i]
 }
