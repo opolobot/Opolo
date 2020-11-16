@@ -17,6 +17,7 @@ func init() {
 	cmd.Name("purge")
 	cmd.Description("Purges the desired amount of messages from the channel")
 	cmd.Use(mdlw.PermCheck(discordgo.PermissionManageMessages, "ManageMessages"))
+	cmd.Use(mdlw.DeleteSent)
 	cmd.Use(checkValidAmnt)
 	cmd.Use(purge)
 	cmd.Arg(&arg.Argument{

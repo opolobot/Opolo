@@ -39,9 +39,11 @@ type Context struct {
 	StartTime time.Time
 }
 
-// Send sends a message to the channel the msg came from.
-func (ctx *Context) Send(content string, deleteTime ...time.Duration) (*discordgo.Message, error) {
-	m, err := ctx.Session.ChannelMessageSend(ctx.Msg.ChannelID, content)
+// ---- Send ----
+
+// SendComplex sends a message of any type to the channel the msg came from.
+func (ctx *Context) SendComplex(data *discordgo.MessageSend, deleteTime ...time.Duration) (*discordgo.Message, error) {
+	m, err := ctx.Session.ChannelMessageSendComplex(ctx.Msg.ChannelID, data)
 	ctx.lastMsg = m
 
 	if len(deleteTime) > 0 {
@@ -54,22 +56,77 @@ func (ctx *Context) Send(content string, deleteTime ...time.Duration) (*discordg
 	return m, err
 }
 
-// Edit edits the last msg sent by the context.
-func (ctx *Context) Edit(content string) (*discordgo.Message, error) {
+// SendEmbed sends an embed.
+func (ctx *Context) SendEmbed(embed *discordgo.MessageEmbed, deleteTime ...time.Duration) (*discordgo.Message, error) {
+	return ctx.SendComplex(&discordgo.MessageSend{
+		Embed: embed,
+	}, deleteTime...)
+}
+
+// Send sends a message to the channel the msg came from.
+func (ctx *Context) Send(content string, deleteTime ...time.Duration) (*discordgo.Message, error) {
+	return ctx.SendComplex(&discordgo.MessageSend{
+		Content: content,
+	}, deleteTime...)
+}
+
+// SendError reports an error to the err channel and to the user
+func (ctx *Context) SendError(err error) {
+	cmdName := (func() string {
+		if ctx.Cmd != nil && ctx.Cmd.Name != "" {
+			return ctx.Cmd.Name
+		}
+
+		return "N/A"
+	})()
+
+	errTxt := ":rotating_light: An error occurred while handling the command `" + cmdName + "`:\n```" + err.Error() + "```"
+	ctx.Session.ChannelMessageSend(ctx.Msg.ChannelID, errTxt+"\nThe error has been reported")
+	config := util.GetConfig()
+	if config.LogChannel != "" {
+		stacktrace := string(debug.Stack())
+		log.Print("An error occurred while handling the command " + cmdName + ":\n" + err.Error() + "\n" + stacktrace)
+		ctx.Session.ChannelMessageSend(config.LogChannel, errTxt+"\n\n**Stacktrace**\n```"+stacktrace+"```")
+	}
+}
+
+// ---- Edit ----
+
+// EditComplex edits the last message sent by the bot in the channel with complex content.
+func (ctx *Context) EditComplex(data *discordgo.MessageEdit) (*discordgo.Message, error) {
 	if ctx.lastMsg == nil {
 		return nil, errors.New("Tried to edit a message that does not exist")
 	}
 
-	m, err := ctx.Session.ChannelMessageEdit(ctx.lastMsg.ChannelID, ctx.lastMsg.ID, content)
+	data.ID = ctx.lastMsg.ID
+	data.Channel = ctx.lastMsg.ChannelID
+
+	m, err := ctx.Session.ChannelMessageEditComplex(data)
 	ctx.lastMsg = m
 	return m, err
 }
+
+// EditEmbed edits a message replacing the previous
+func (ctx *Context) EditEmbed(embed *discordgo.MessageEmbed) (*discordgo.Message, error) {
+	return ctx.EditComplex(&discordgo.MessageEdit{
+		Embed: embed,
+	})
+}
+
+// Edit edits the last msg sent by the context.
+func (ctx *Context) Edit(content string) (*discordgo.Message, error) {
+	return ctx.EditComplex(&discordgo.MessageEdit{
+		Content: &content,
+	})
+}
+
+// ---- Delete ----
 
 // Delete deletes the last recently sent message or the supplied one.
 func (ctx *Context) Delete(msg ...*discordgo.Message) error {
 	msgSupplied := len(msg) > 0
 	if msgSupplied && ctx.lastMsg == nil {
-		return errors.New("Tried to delete a message that does not exist")
+		return nil
 	}
 
 	var ID string
@@ -84,6 +141,8 @@ func (ctx *Context) Delete(msg ...*discordgo.Message) error {
 
 	return ctx.Session.ChannelMessageDelete(chanID, ID)
 }
+
+// ---- Message Collectors ----
 
 // Prompt sends a prompt to accept or deny within 10 seconds.
 func (ctx *Context) Prompt(prompt string) (int, error) {
@@ -153,24 +212,4 @@ func (ctx *Context) Collect(time time.Duration, amnt ...int) (chan *discordgo.Me
 	colMnger := msgcol.GetCollectionManager()
 	col := colMnger.NewCollector(ctx.Msg.ChannelID, time, amntToPurge)
 	return col.Msgs, nil
-}
-
-// SendError reports an error to the err channel and to the user
-func (ctx *Context) SendError(err error) {
-	cmdName := (func() string {
-		if ctx.Cmd != nil && ctx.Cmd.Name != "" {
-			return ctx.Cmd.Name
-		}
-
-		return "N/A"
-	})()
-
-	errTxt := ":rotating_light: An error occurred while handling the command `" + cmdName + "`:\n```" + err.Error() + "```"
-	ctx.Session.ChannelMessageSend(ctx.Msg.ChannelID, errTxt+"\nThe error has been reported")
-	config := util.GetConfig()
-	if config.LogChannel != "" {
-		stacktrace := string(debug.Stack())
-		log.Print("An error occurred while handling the command " + cmdName + ":\n" + err.Error() + "\n" + stacktrace)
-		ctx.Session.ChannelMessageSend(config.LogChannel, errTxt+"\n\n**Stacktrace**\n```"+stacktrace+"```")
-	}
 }

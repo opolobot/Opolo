@@ -36,16 +36,12 @@ func ping(ctx *cmd.Context, next cmd.NextFunc) {
 		latency *= -1
 	}
 
-	heartbeatTime := ctx.Session.HeartbeatLatency().Round(time.Millisecond).Seconds()
-
 	ctx.Edit(fmt.Sprintf(
 		"***:ping_pong:  ~Pong!***\n"+
 			"\n> __**latency**__        **~**   :arrows_counterclockwise: %v"+
-			"\n> __**exec. time**__   **~**   :stopwatch: %v"+
-			"\n> __**heartbeat**__    **~**   :heartbeat: %.1fs",
+			"\n> __**exec. time**__   **~**   :stopwatch: %v",
 		latency,
 		executionTime,
-		heartbeatTime,
 	))
 
 	next()
