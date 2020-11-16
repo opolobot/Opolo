@@ -10,7 +10,7 @@ import (
 func init() {
 	cmd := cmd.New()
 	cmd.Name("buizel")
-	cmd.Aliases("bui", "randombui")
+	cmd.Aliases("bui")
 	cmd.Description("Grab a random gif of a buizel")
 	cmd.Use(bui)
 
@@ -24,12 +24,12 @@ func bui(ctx *cmd.Context, next cmd.NextFunc) {
 	}
 
 	defer resp.Body.Close()
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		next(err)
 	}
 
 	img := string(body)
-
 	ctx.Send(img)
 }
