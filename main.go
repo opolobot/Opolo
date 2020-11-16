@@ -16,6 +16,8 @@ func main() {
 	// Seed math/rand
 	rand.Seed(time.Now().UnixNano())
 
+	log.Printf("Staring Whiskey (%v)", util.Version())
+
 	config := util.GetConfig()
 
 	session, err := discordgo.New("Bot " + config.Token)

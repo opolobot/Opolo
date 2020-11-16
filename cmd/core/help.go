@@ -36,6 +36,7 @@ func help(ctx *cmd.Context, next cmd.NextFunc) {
 
 	writeGap(&helpStrBldr)
 	writeDivider(&helpStrBldr, dividerLen)
+	writeGap(&helpStrBldr)
 
 	// w!help [cmd] <- RawArgs[0]
 	// get help info on a specific command
@@ -62,11 +63,13 @@ func help(ctx *cmd.Context, next cmd.NextFunc) {
 	}
 
 	writeDivider(&helpStrBldr, dividerLen)
+	writeGap(&helpStrBldr)
 	helpStrBldr.WriteString(fmt.Sprintf("**prefix  ~  **`%v`", prefix))
+	writeGap(&helpStrBldr)
 	writeDivider(&helpStrBldr, dividerLen)
-	helpStrBldr.WriteString("*Whiskey ")
+	helpStrBldr.WriteString(fmt.Sprintf("\n*Whiskey (%v) by zorbyte and itjk.*", util.Version()))
 
-	_, _ = ctx.Send(helpStrBldr.String())
+	ctx.Send(helpStrBldr.String())
 	next()
 }
 
@@ -77,7 +80,6 @@ func writeGap(helpStrBldr *strings.Builder) {
 func writeDivider(helpStrBldr *strings.Builder, dividerLen float64) {
 	divider := "~~" + strings.Repeat("-", int(math.Floor(dividerLen * 1.2))) + "~~"
 	helpStrBldr.WriteString(divider)
-	writeGap(helpStrBldr)
 }
 
 func buildLookupHelp(helpStrBldr *strings.Builder, prefix string, cmnd *cmd.Command) {
@@ -94,7 +96,7 @@ func buildRegularHelp(helpStrBldr *strings.Builder, prefix string) {
 	}
 
 	sort.Strings(keys)
-	sort.Reverse(sort.StringSlice(keys))
+	_ = sort.Reverse(sort.StringSlice(keys))
 	for _, key := range keys {
 		cat := reg.Categories[key]
 		helpStrBldr.WriteString(cat.DisplayName())

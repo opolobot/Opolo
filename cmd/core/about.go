@@ -11,7 +11,7 @@ const teamWhiskeyGithub string = "https://github.com/zorbyte/Whiskey"
 func init() {
 	cmd := cmd.New()
 	cmd.Name("about")
-	cmd.Description("Tells you about Whiskey and TeamWhiskey")
+	cmd.Description("Tells you about Whiskey")
 	cmd.Use(about)
 
 	Category.AddCommand(cmd.Command())
