@@ -1,4 +1,4 @@
-module github.com/zorbyte/whiskey
+module github.com/opolobot/opolo
 
 go 1.15
 

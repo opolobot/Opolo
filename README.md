@@ -1,3 +1,3 @@
-# Whiskey
+# Opolo
 
 A discord bot.

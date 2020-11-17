@@ -41,6 +41,8 @@ func Parse(args []*Argument, rawArgs []string) (ParsedArguments, error) {
 			}
 		}
 
+		parsed[arg.Name] = output
+
 		err := validateArgOutput(arg, output)
 		if err != nil {
 			return nil, err

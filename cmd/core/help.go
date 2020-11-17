@@ -9,7 +9,11 @@ import (
 	"github.com/zorbyte/whiskey/arg"
 	"github.com/zorbyte/whiskey/cmd"
 	"github.com/zorbyte/whiskey/util"
+	"github.com/zorbyte/whiskey/util/embed"
 )
+
+const helpEmoji = ":grey_question:"
+const helpColour = 0xCCD6DD
 
 func init() {
 	cmd := cmd.New()
@@ -24,7 +28,22 @@ func init() {
 	Category.AddCommand(cmd.Command())
 }
 
-func help(ctx *cmd.Context, next cmd.NextFunc) {
+func help(ctx *cmd.Context, _ cmd.NextFunc) {
+	prefix := util.GetConfig().Prefix
+	embed := embed.QuickEmbed(helpColour, helpEmoji, "Whiskey help", fmt.Sprintf("**prefix:** `%v`", prefix))
+	embed.Fields = append(embed.Fields)
+	if len(ctx.RawArgs) > 0 {
+		callKeyArg := ctx.Args["cmd"]
+		if callKeyArg != nil {
+			_ = callKeyArg.(string)
+			// TODO
+		}
+	}
+}
+
+func individualHelp(cmd *cmd.Command) {}
+
+func helpOld(ctx *cmd.Context, next cmd.NextFunc) {
 	var helpStrBldr strings.Builder
 	helpMenuName := "**Whiskey help**"
 	helpStrBldr.WriteString(helpMenuName)
@@ -78,7 +97,7 @@ func writeGap(helpStrBldr *strings.Builder) {
 }
 
 func writeDivider(helpStrBldr *strings.Builder, dividerLen float64) {
-	divider := "~~" + strings.Repeat("-", int(math.Floor(dividerLen * 1.2))) + "~~"
+	divider := "~~" + strings.Repeat("-", int(math.Floor(dividerLen*1.2))) + "~~"
 	helpStrBldr.WriteString(divider)
 }
 
@@ -104,7 +123,7 @@ func buildRegularHelp(helpStrBldr *strings.Builder, prefix string) {
 
 		var cmdKeys []string
 		for _, cmnd := range cat.Commands {
-			cmdKeys = append(cmdKeys, "`" + cmnd.Name + "`")
+			cmdKeys = append(cmdKeys, "`"+cmnd.Name+"`")
 		}
 
 		sort.Strings(cmdKeys)

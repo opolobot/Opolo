@@ -9,6 +9,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/zorbyte/whiskey/util"
+	"github.com/zorbyte/whiskey/util/embed"
 	"github.com/zorbyte/whiskey/util/msgcol"
 )
 
@@ -80,13 +81,15 @@ func (ctx *Context) SendError(err error) {
 		return "N/A"
 	})()
 
-	errTxt := ":rotating_light: An error occurred while handling the command `" + cmdName + "`:\n```" + err.Error() + "```"
-	ctx.Session.ChannelMessageSend(ctx.Msg.ChannelID, errTxt+"\nThe error has been reported")
+	errEmbed := embed.Error("Failed to run command `"+cmdName+"`", "```yaml\n"+err.Error()+"```")
+	ctx.SendEmbed(errEmbed)
+
 	config := util.GetConfig()
 	if config.LogChannel != "" {
 		stacktrace := string(debug.Stack())
 		log.Print("An error occurred while handling the command " + cmdName + ":\n" + err.Error() + "\n" + stacktrace)
-		ctx.Session.ChannelMessageSend(config.LogChannel, errTxt+"\n\n**Stacktrace**\n```"+stacktrace+"```")
+		ctx.Session.ChannelMessageSendEmbed(config.LogChannel, errEmbed)
+		ctx.Session.ChannelMessageSend(config.LogChannel, "**Stacktrace**\n```go\n" + stacktrace + "```")
 	}
 }
 

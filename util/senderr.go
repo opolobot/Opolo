@@ -14,7 +14,7 @@ func SendError(session *discordgo.Session, err error) {
 	log.Println(err)
 	log.Println(string(debug.Stack()))
 	if config.LogChannel != "" {
-		errStr := fmt.Sprintf("**:warning: An error occurred in-flight**\n\n%v\n**Stacktrace**\n```%v```", err.Error(), string(debug.Stack()))
+		errStr := fmt.Sprintf("**:warning: An error occurred in-flight**\n\n%v\n**Stacktrace**\n```go\n%v```", err.Error(), string(debug.Stack()))
 		session.ChannelMessageSend(config.LogChannel, errStr)
 	}
 }

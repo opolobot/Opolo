@@ -13,5 +13,5 @@ func Ready(s *discordgo.Session, m *discordgo.Ready) {
 	log.Printf("Logged in as %v#%v (%v)", s.State.User.Username, s.State.User.Discriminator, s.State.User.ID)
 	config := util.GetConfig()
 
-	s.UpdateStatus(1, strings.Replace(config.Status, "{prefix}", config.Prefix, 0))
+	s.UpdateStatus(1, strings.Replace(config.Status, "{prefix}", config.Prefix, -1))
 }
