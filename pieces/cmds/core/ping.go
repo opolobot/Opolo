@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/opolobot/opolo/common"
 	"github.com/opolobot/opolo/ocl"
 	"github.com/opolobot/opolo/ocl/embeds"
 )
@@ -39,7 +38,7 @@ func ping(ctx *ocl.Context, next ocl.Next) {
 		latency *= -1
 	}
 
-	pongEmbed := embeds.Info("Pong", "ping_pong")
+	pongEmbed := embeds.Info("Pong", "ping_pong", "")
 	pongEmbed.Fields = append(
 		pongEmbed.Fields,
 		&discordgo.MessageEmbedField{
