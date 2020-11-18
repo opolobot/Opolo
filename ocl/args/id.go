@@ -78,6 +78,6 @@ func getNameOfID(ID string, greedy bool) string {
 		nameIdxStart += 3
 	}
 
-	endIdx := len(ID) - 2
+	endIdx := len(ID) - 1
 	return ID[nameIdxStart:endIdx]
 }

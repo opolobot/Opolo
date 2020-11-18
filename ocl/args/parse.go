@@ -3,7 +3,7 @@ package args
 import (
 	"reflect"
 
-	"github.com/opolobot/opolo/common"
+	"github.com/opolobot/opolo/utils"
 )
 
 // ParsedArguments is a map of arguments using the name of the argument as the key.
@@ -45,8 +45,6 @@ func Parse(args []*Argument, rawArgs []string) (ParsedArguments, error) {
 			}
 		}
 
-		parsed[arg.name] = output
-
 		err := validateArgOutput(arg, output)
 		if err != nil {
 			return nil, err
@@ -59,7 +57,6 @@ func Parse(args []*Argument, rawArgs []string) (ParsedArguments, error) {
 }
 
 // handleArg handles an argument along with its raw one.
-// Will recursively call in the case that an argument is greedy.
 func handleArg(arg *Argument, raw string) (interface{}, error) {
 	if arg.parser == nil {
 		return raw, nil
@@ -77,7 +74,7 @@ func handleArg(arg *Argument, raw string) (interface{}, error) {
 // if any conditions fail, the appropriate error shall be thrown.
 func validateArgOutput(arg *Argument, output interface{}) error {
 	if arg.required {
-		isZero := output == nil || common.IsZero(reflect.ValueOf(output))
+		isZero := output == nil || utils.IsZero(reflect.ValueOf(output))
 
 		if slice, isSlice := output.([]interface{}); arg.greedy && (isZero || isSlice && len(slice) == 0) {
 			return NewParsingError(arg, InsufficientArguments)

@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/opolobot/opolo/common"
-	embed "github.com/opolobot/opolo/ocl/embeds"
+	"github.com/opolobot/opolo/ocl/embeds"
 	"github.com/opolobot/opolo/ocl/msgcol"
+	"github.com/opolobot/opolo/utils"
 )
 
 const (
@@ -81,10 +81,10 @@ func (ctx *Context) SendError(err error) {
 		return "N/A"
 	})()
 
-	errEmbed := embed.Error("Failed to run command `"+cmdName+"`", "```yaml\n"+err.Error()+"```")
+	errEmbed := embeds.Error("Failed to run command `"+cmdName+"`", "```yaml\n"+err.Error()+"```")
 	ctx.SendEmbed(errEmbed)
 
-	logChannel := common.GetConfig().LogChannel
+	logChannel := utils.GetConfig().LogChannel
 	if logChannel != "" {
 		stacktrace := string(debug.Stack())
 		log.Print("An error occurred while handling the command " + cmdName + ":\n" + err.Error() + "\n" + stacktrace)

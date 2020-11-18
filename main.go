@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/opolobot/opolo/common"
+	"github.com/opolobot/opolo/utils"
 )
 
 func main() {
@@ -18,7 +18,7 @@ func main() {
 
 	log.Printf("Staring opolo")
 
-	config := common.GetConfig()
+	config := utils.GetConfig()
 
 	session, err := discordgo.New("Bot " + config.Token)
 	if err != nil {

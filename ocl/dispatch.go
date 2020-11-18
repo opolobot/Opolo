@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/opolobot/opolo/common"
+	"github.com/opolobot/opolo/utils"
 	"github.com/opolobot/opolo/ocl/args"
 	"github.com/opolobot/opolo/ocl/embeds"
 )
@@ -18,7 +18,7 @@ var stringSplitter = regexp.MustCompile(" +")
 func Dispatch(session *discordgo.Session, msg *discordgo.Message) (next Next) {
 	startTime := time.Now()
 
-	prefix := common.GetConfig().Prefix
+	prefix := utils.GetConfig().Prefix
 	if !strings.HasPrefix(msg.Content, prefix) {
 		return
 	}
@@ -100,7 +100,7 @@ func handleInFlightPanic(ctx *Context) {
 
 func didYouMean(ctx *Context) {
 	reg := GetRegistry()
-	prefix := common.GetConfig().Prefix
+	prefix := utils.GetConfig().Prefix
 
 	closest, distance := reg.FindClosestCmdMatch(ctx.CallKey)
 	if distance <= 2 && distance != 0 {
