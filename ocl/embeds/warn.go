@@ -1,8 +1,8 @@
-package embed
+package embeds
 
 import "github.com/bwmarrin/discordgo"
 
-const warningEmoji = ":warning:"
+const warningEmoji = "warning"
 const warningColour = 0xFFCC4D
 
 

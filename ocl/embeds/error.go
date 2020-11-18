@@ -1,8 +1,8 @@
-package embed
+package embeds
 
 import "github.com/bwmarrin/discordgo"
 
-const errorEmoji = ":rotating_light:"
+const errorEmoji = "rotating_light"
 const errorColour = 0xDD2E44
 
 // Error is an error embed.

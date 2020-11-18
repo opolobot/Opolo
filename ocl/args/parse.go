@@ -18,13 +18,13 @@ func Parse(args []*Argument, rawArgs []string) (ParsedArguments, error) {
 	for _, arg := range args {
 		var output interface{}
 		if i > len(rawArgs)-1 {
-			output = nil
+			output = arg.parser.ZeroVal()
 		} else {
 			if arg.greedy {
 				output = make([]interface{}, 0)
 			}
 
-			for j := 0; (!arg.greedy && j == 0) && (i < len(rawArgs)); i++ {
+			for j := 0; i < len(rawArgs); i++ {
 				raw := rawArgs[i]
 				out, err := handleArg(arg, raw)
 				if err != nil {
@@ -35,6 +35,10 @@ func Parse(args []*Argument, rawArgs []string) (ParsedArguments, error) {
 					output = append(output.([]interface{}), out)
 				} else {
 					output = out
+				}
+
+				if !arg.greedy && j == 0 {
+					break
 				}
 
 				j++

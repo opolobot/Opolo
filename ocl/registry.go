@@ -30,9 +30,6 @@ func (reg *Registry) AddCategory(cat *Category) {
 
 func (reg *Registry) addCommand(cmd *Command) {
 	log.Printf("Registering command %v\n", cmd.Name)
-
-	// Pre-gen the help string.
-	cmd.Help()
 	reg.cmds = append(reg.cmds, cmd)
 }
 

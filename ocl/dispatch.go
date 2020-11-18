@@ -9,17 +9,18 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/opolobot/opolo/common"
 	"github.com/opolobot/opolo/ocl/args"
+	"github.com/opolobot/opolo/ocl/embeds"
 )
 
 var stringSplitter = regexp.MustCompile(" +")
 
 // Dispatch dispatches a command.
-func Dispatch(session *discordgo.Session, msg *discordgo.Message) NextFunc {
+func Dispatch(session *discordgo.Session, msg *discordgo.Message) (next Next) {
 	startTime := time.Now()
 
 	prefix := common.GetConfig().Prefix
 	if !strings.HasPrefix(msg.Content, prefix) {
-		return nil
+		return
 	}
 
 	callKey, rawArgs := parseContent(prefix, msg.Content)
@@ -43,12 +44,11 @@ func Dispatch(session *discordgo.Session, msg *discordgo.Message) NextFunc {
 		ctx.Cmd = cmd
 		success := parseArgs(ctx)
 		if !success {
-			return nil
+			return
 		}
 
-		var nextFunc NextFunc
 		idx := -1
-		nextFunc = func(err ...error) {
+		next = func(err ...error) {
 			if idx < 0 {
 				defer handleInFlightPanic(ctx)
 			}
@@ -56,31 +56,31 @@ func Dispatch(session *discordgo.Session, msg *discordgo.Message) NextFunc {
 			if len(err) > 0 {
 				ctx.SendError(err[0])
 				return
-			} else if idx++; idx <= len(cmd.stack)-1 {
-				cmd.stack[idx](ctx, nextFunc)
+			} else if idx++; idx <= len(cmd.Stack)-1 {
+				cmd.Stack[idx](ctx, next)
 			}
 		}
 
-		return nextFunc
+		return
 	}
 
 	didYouMean(ctx)
 
-	return nil
+	return
 }
 
 func parseContent(prefix, content string) (callKey string, rawArgs []string) {
-	excludingPrefix := strings.TrimSpace(strings.ToLower(content))[len(prefix):]
+	excludingPrefix := strings.TrimSpace(content)[len(prefix):]
 	segments := stringSplitter.Split(excludingPrefix, -1)
-	callKey = segments[0]
+	callKey = strings.ToLower(segments[0])
 	rawArgs = segments[1:]
 
-	return callKey, rawArgs
+	return
 }
 
 func parseArgs(ctx *Context) (success bool) {
 	var err error
-	ctx.Args, err = args.Parse(ctx.Cmd.args, ctx.RawArgs)
+	ctx.Args, err = args.Parse(ctx.Cmd.Arguments, ctx.RawArgs)
 	if success = err == nil; !success {
 		if pErr, ok := err.(*args.ParsingError); ok {
 			ctx.Send(pErr.UIError())
@@ -89,7 +89,7 @@ func parseArgs(ctx *Context) (success bool) {
 		}
 	}
 
-	return success
+	return
 }
 
 func handleInFlightPanic(ctx *Context) {
@@ -104,6 +104,6 @@ func didYouMean(ctx *Context) {
 
 	closest, distance := reg.FindClosestCmdMatch(ctx.CallKey)
 	if distance <= 2 && distance != 0 {
-		ctx.Send(fmt.Sprintf("**:question: ~ Did you mean `%v`?**", prefix+closest))
+		ctx.SendEmbed(embeds.Info(fmt.Sprintf("Did you mean `%v`?", prefix+closest), "question", ""))
 	}
 }

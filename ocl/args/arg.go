@@ -13,8 +13,9 @@ type Argument struct {
 	parser Parser
 }
 
-// New creates an argument.
-func New(ID string, parser Parser, info ...string) *Argument {
+// Create creates an argument.
+// N.B. The term new was not used because we're not necessarily making a new argument as a concept.
+func Create(ID string, parser Parser, info ...string) *Argument {
 	name, required, greedy, err := parseID(ID)
 	if err != nil {
 		panic(err)
