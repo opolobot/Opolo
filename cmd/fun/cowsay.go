@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/rivo/uniseg"
+	"github.com/zorbyte/whiskey/arg"
 	"github.com/zorbyte/whiskey/cmd"
 )
 
@@ -22,17 +23,17 @@ func init() {
 	cmd.Aliases("cow", "moo")
 	cmd.Description("Generates an ASCII picture of a cow saying something provided by the user")
 	cmd.Use(cowsay)
-	/*cmd.Arg(&arg.Argument{
+	cmd.Arg(&arg.Argument{
 		Name:     "message",
 		Required: true,
 		Greedy:   true,
-	})*/
+	})
 
 	Category.AddCommand(cmd.Command())
 }
 
 func cowsay(ctx *cmd.Context, next cmd.NextFunc) {
-	message := strings.Join(ctx.RawArgs, " ")
+	message := ctx.Args["message"].(string)
 	send := createBubble(message, max)
 	send += cow
 	ctx.Send("```\n" + send + "```")

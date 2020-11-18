@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/zorbyte/whiskey/arg"
 	"github.com/zorbyte/whiskey/cmd"
 )
 
@@ -46,11 +47,11 @@ func init() {
 	cmd.Aliases("8")
 	cmd.Description("Ask 8ball a burning yes/no question")
 	cmd.Use(eightball)
-	/*cmd.Arg(&arg.Argument{
+	cmd.Arg(&arg.Argument{
 		Name:     "query",
 		Required: true,
 		Greedy:   true,
-	})*/
+	})
 
 	Category.AddCommand(cmd.Command())
 }

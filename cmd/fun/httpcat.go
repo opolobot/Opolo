@@ -34,12 +34,13 @@ func init() {
 
 func httpcat(ctx *cmd.Context, next cmd.NextFunc) {
 	if len(ctx.RawArgs) > 0 {
-		code := ctx.Args["code"].(string)
-		if stringInSlice(code, statusCodes) {
+		arg := ctx.Args["code"].(string)
+		if stringInSlice(arg, statusCodes) {
+			ctx.Send(httpCat(arg))
+		} else if code := itemFromAinB(ctx.RawArgs, statusCodes); code != "" {
 			ctx.Send(httpCat(code))
 		} else {
-			code = randomFromSlice(statusCodes)
-			ctx.Send(httpCat(code))
+			ctx.Send(httpCat("404"))
 		}
 	} else {
 		code := randomFromSlice(statusCodes)
@@ -63,4 +64,13 @@ func stringInSlice(str string, slice []string) bool {
 		}
 	}
 	return false
+}
+
+func itemFromAinB(a []string, b []string) string {
+	for _, item := range b {
+		if stringInSlice(item, a) {
+			return item
+		}
+	}
+	return ""
 }
