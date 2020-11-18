@@ -5,8 +5,8 @@ opolo, the cutest opossum on Discord!
 ## Structure
 
 ```
-├───assets
-├───db
+├───assets - Assets such as images
+├───db - Database
 ├───ocl - opolo command library
 │   ├───args - Argument parsing
 │   ├───embeds - UI/UX theming with embeds
