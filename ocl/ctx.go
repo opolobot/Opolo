@@ -8,9 +8,8 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/zorbyte/whiskey/util"
-	"github.com/zorbyte/whiskey/util/embed"
-	"github.com/zorbyte/whiskey/util/msgcol"
+	"github.com/opolobot/opolo/ocl/embeds"
+	"github.com/opolobot/opolo/ocl/msgcol"
 )
 
 const (

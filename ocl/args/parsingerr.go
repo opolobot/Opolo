@@ -1,4 +1,4 @@
-package arg
+package args
 
 import "fmt"
 
@@ -43,5 +43,5 @@ func (err *ParsingError) UIError() string {
 
 // NewParsingError creates an argument parsing error that's user friendly.
 func NewParsingError(arg *Argument, errorType int) *ParsingError {
-	return &ParsingError{errorType, arg.DisplayName()}
+	return &ParsingError{errorType, arg.ID}
 }
