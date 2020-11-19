@@ -145,6 +145,24 @@ func (ctx *Context) Delete(msg ...*discordgo.Message) error {
 	return ctx.Session.ChannelMessageDelete(chanID, ID)
 }
 
+// ---- Permissions ----
+
+// HasPermission checks the user model if a user has a permission.
+func (ctx *Context) HasPermission(perm Permission) (has bool) {
+	if perm == PermissionMaintainer {
+		for _, maintainer := range utils.GetConfig().Maintainers {
+			has = maintainer == ctx.Msg.Author.ID
+			if has {
+				return
+			}
+		}
+	} else {
+		has = true
+	}
+
+	return
+}
+
 // ---- Message Collectors ----
 
 // Prompt sends a prompt to accept or deny within 10 seconds.

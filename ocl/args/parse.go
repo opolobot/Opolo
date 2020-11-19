@@ -32,6 +32,13 @@ func Parse(args []*Argument, rawArgs []string) (ParsedArguments, error) {
 				}
 
 				if arg.greedy {
+					// If the output of a greedy arg is a zero value, do not append it
+					// and assume that the arguments have ended.
+					if out == arg.parser.ZeroVal() {
+						i--
+						break
+					}
+
 					output = append(output.([]interface{}), out)
 				} else {
 					output = out

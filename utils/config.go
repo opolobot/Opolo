@@ -14,10 +14,12 @@ const configFileName string = "./config.yml"
 
 // Config represents the bot configuration file.
 type Config struct {
-	LogChannel string `yaml:"logChannel"`
-	Prefix     string `yaml:"prefix"`
-	Status     string `yaml:"status"`
-	Token      string `yaml:"token"`
+	LogChannel  string   `yaml:"logChannel"`
+	Prefix      string   `yaml:"prefix"`
+	Status      string   `yaml:"status"`
+	Token       string   `yaml:"token"`
+	Version     string   `yaml:"version"`
+	Maintainers []string `yaml:"maintainers"`
 }
 
 // GetConfig gets the config from the filesystem followed by a singleton

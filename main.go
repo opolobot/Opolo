@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/opolobot/opolo/pieces"
 	"github.com/opolobot/opolo/utils"
 )
 
@@ -16,9 +17,9 @@ func main() {
 	// Seed math/rand.
 	rand.Seed(time.Now().UnixNano())
 
-	log.Printf("Staring opolo")
-
 	config := utils.GetConfig()
+
+	log.Printf("Staring Opolo (%v)", config.Version)
 
 	session, err := discordgo.New("Bot " + config.Token)
 	if err != nil {
@@ -29,8 +30,8 @@ func main() {
 	session.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsGuilds | discordgo.IntentsGuildMessages)
 
 	startTime := time.Now()
-	registerHandlers(session)
-	registerCommandCategories()
+	pieces.RegisterHandlers(session)
+	pieces.RegisterCommandCategories()
 
 	// Measure bootstrap speed.
 	log.Printf("Bootstap time was %v", time.Since(startTime))

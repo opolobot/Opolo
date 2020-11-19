@@ -1,8 +1,6 @@
 package events
 
 import (
-	"time"
-
 	"github.com/bwmarrin/discordgo"
 	"github.com/opolobot/opolo/ocl"
 	"github.com/opolobot/opolo/ocl/msgcol"
@@ -15,12 +13,6 @@ func MessageCreate(session *discordgo.Session, msg *discordgo.MessageCreate) {
 		return
 	}
 
-	// <3 from zorbyte
-	if msg.Content == ";babylon_exists_don't_tell_me_otherwise" {
-		easterEggSponsoredByZorbyte(session, msg)
-		return
-	}
-
 	// This NextFunc instantiates the middleware chain.
 	next := ocl.Dispatch(session, msg.Message)
 	if next == nil {
@@ -29,15 +21,4 @@ func MessageCreate(session *discordgo.Session, msg *discordgo.MessageCreate) {
 	}
 
 	next()
-}
-
-// easterEggSponsoredByZorbyte is an easter egg triggered by a special message content string.
-// Please note that any religious references are not a representation of the views of the developers
-// and are rather a reference to a running joke amongst the developers.
-func easterEggSponsoredByZorbyte(session *discordgo.Session, msg *discordgo.MessageCreate) {
-	m, _ := session.ChannelMessageSend(msg.ChannelID, "Where are we talking about?")
-	go (func() {
-		time.Sleep(1 * time.Second)
-		session.ChannelMessageEdit(m.ChannelID, m.ID, "Oh wait, it's gone:tm:")
-	})()
 }

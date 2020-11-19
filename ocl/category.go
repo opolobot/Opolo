@@ -2,18 +2,19 @@ package ocl
 
 // Category an incubator for commands of a specific type.
 type Category struct {
-	name string
+	Name  string
+	Emoji string
 
 	Commands []*Command
 }
 
-// AddCommand adds a command to the category.
-func (cat *Category) AddCommand(cmd *Command) {
+// Add adds a command to the category.
+func (cat *Category) Add(cmd *Command) {
 	cmd.category = cat
 	cat.Commands = append(cat.Commands, cmd)
 }
 
 // NewCategory creates a new category.
-func NewCategory(name string) *Category {
-	return &Category{name, make([]*Command, 0)}
+func NewCategory(name, emoji string) *Category {
+	return &Category{name, emoji, make([]*Command, 0)}
 }

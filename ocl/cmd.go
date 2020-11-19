@@ -20,7 +20,7 @@ type Command struct {
 	Aliases     []string
 	Arguments   []*args.Argument
 	Stack       []Middleware
-	Permission  int
+	Permission  Permission
 
 	category *Category
 	enabled  bool
@@ -31,7 +31,8 @@ func (cmd *Command) Category() *Category {
 	return cmd.category
 }
 
-func (cmd *Command) usage() string {
+// Usage describes how to use the command through the IDs of its arguments.
+func (cmd *Command) Usage() string {
 	var usageBldr strings.Builder
 	for i, arg := range cmd.Arguments {
 		usageBldr.WriteString(arg.ID)

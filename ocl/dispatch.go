@@ -18,7 +18,7 @@ var stringSplitter = regexp.MustCompile(" +")
 func Dispatch(session *discordgo.Session, msg *discordgo.Message) (next Next) {
 	startTime := time.Now()
 
-	prefix := utils.GetConfig().Prefix
+	prefix := utils.StubPrefix()
 	if !strings.HasPrefix(msg.Content, prefix) {
 		return
 	}
@@ -100,7 +100,7 @@ func handleInFlightPanic(ctx *Context) {
 
 func didYouMean(ctx *Context) {
 	reg := GetRegistry()
-	prefix := utils.GetConfig().Prefix
+	prefix := utils.StubPrefix()
 
 	closest, distance := reg.FindClosestCmdMatch(ctx.CallKey)
 	if distance <= 2 && distance != 0 {

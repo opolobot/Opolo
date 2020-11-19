@@ -1,4 +1,4 @@
-package main
+package pieces
 
 import (
 	"github.com/bwmarrin/discordgo"
@@ -8,14 +8,19 @@ import (
 	"github.com/opolobot/opolo/pieces/events"
 )
 
-func registerHandlers(session *discordgo.Session) {
+// TODO(@zorbyte): Makes this more dynamic instead of registrering the individual pieces.
+
+// RegisterHandlers registers event handlers.
+func RegisterHandlers(session *discordgo.Session) {
 	session.AddHandler(events.Ready)
 	session.AddHandler(events.MessageCreate)
 }
 
-func registerCommandCategories() {
+// RegisterCommandCategories registers command categories.
+func RegisterCommandCategories() {
 	reg := ocl.GetRegistry()
-	reg.AddCategory(fun.Category)
+	defer reg.Populate()
+
 	reg.AddCategory(core.Category)
-	reg.Populate()
+	reg.AddCategory(fun.Category)
 }

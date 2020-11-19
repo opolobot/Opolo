@@ -10,3 +10,11 @@ prefix: ";"
 
 # You can interpolate the prefix ONCE in the status using {prefix}
 status: "{prefix}help ^.^"
+
+# The version of opolo we are running, this should reflect the github releases if any.
+# TODO(@zorbyte): Use git to find releases instead of config
+version: 0.1.0
+
+# A list of bot maintainers.
+maintainers:
+  - userID

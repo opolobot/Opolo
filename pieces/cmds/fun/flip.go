@@ -15,7 +15,7 @@ func init() {
 		Stack:       []ocl.Middleware{flip},
 	}
 
-	Category.AddCommand(cmd)
+	Category.Add(cmd)
 }
 
 func flip(ctx *ocl.Context, next ocl.Next) {

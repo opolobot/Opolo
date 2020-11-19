@@ -12,17 +12,14 @@ var regInst *Registry
 
 // Registry holds all the commands and uses a radix trie for lookups.
 type Registry struct {
-	tree trie.Tree
-	cmds []*Command
-
-	Categories map[string]*Category
+	Commands []*Command
+	tree     trie.Tree
 }
 
 // AddCategory adds a command category and registers all of its commands.
 func (reg *Registry) AddCategory(cat *Category) {
-	log.Printf("Registering category %v\n", cat.name)
+	log.Printf("Registering category %v\n", cat.Name)
 
-	reg.Categories[cat.name] = cat
 	for _, cmd := range cat.Commands {
 		reg.addCommand(cmd)
 	}
@@ -30,19 +27,19 @@ func (reg *Registry) AddCategory(cat *Category) {
 
 func (reg *Registry) addCommand(cmd *Command) {
 	log.Printf("Registering command %v\n", cmd.Name)
-	reg.cmds = append(reg.cmds, cmd)
+	reg.Commands = append(reg.Commands, cmd)
 }
 
 // LookupCommand looks up a command using either its name or alias.
-func (reg *Registry) LookupCommand(cmdNameOrAlias string) (*Command, error) {
-	cmdInterface, ok := reg.tree.Trace([]byte(cmdNameOrAlias)).Terminal()
+func (reg *Registry) LookupCommand(callKey string) (*Command, error) {
+	cmdInterface, ok := reg.tree.Trace([]byte(callKey)).Terminal()
 	if !ok {
 		return nil, nil
 	}
 
 	cmd, ok := cmdInterface.(*Command)
 	if !ok {
-		return nil, fmt.Errorf("Failed to assert cmdInterface type as cmd pointer. cmd name: %v", cmdNameOrAlias)
+		return nil, fmt.Errorf("Failed to assert cmdInterface type as cmd pointer. cmd call key: %v", callKey)
 	}
 
 	return cmd, nil
@@ -53,7 +50,7 @@ func (reg *Registry) FindClosestCmdMatch(nonExistentCmd string) (string, int) {
 	nonExtCmdRunes := []rune(nonExistentCmd)
 	shortestDistance := 100
 	var bestRunes []rune
-	for _, cmd := range reg.cmds {
+	for _, cmd := range reg.Commands {
 		runes := []rune(cmd.Name)
 		dist := levenshtein.DistanceForStrings(nonExtCmdRunes, runes, levenshtein.DefaultOptions)
 		if dist < shortestDistance {
@@ -73,7 +70,7 @@ func (reg *Registry) FindClosestCmdMatch(nonExistentCmd string) (string, int) {
 func (reg *Registry) Populate() {
 	var keys [][]byte
 	var vals []interface{}
-	for _, cmd := range reg.cmds {
+	for _, cmd := range reg.Commands {
 		keys = append(keys, []byte(cmd.Name))
 		for _, alias := range cmd.Aliases {
 			keys = append(keys, []byte(alias))
@@ -89,9 +86,7 @@ func (reg *Registry) Populate() {
 // GetRegistry gets the command registry.
 func GetRegistry() *Registry {
 	if regInst == nil {
-		regInst = &Registry{
-			Categories: make(map[string]*Category),
-		}
+		regInst = &Registry{}
 	}
 
 	return regInst

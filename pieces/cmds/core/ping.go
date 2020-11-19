@@ -17,7 +17,7 @@ func init() {
 		Stack:       []ocl.Middleware{ping},
 	}
 
-	Category.AddCommand(cmd)
+	Category.Add(cmd)
 }
 
 func ping(ctx *ocl.Context, next ocl.Next) {

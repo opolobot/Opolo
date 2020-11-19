@@ -1,13 +1,13 @@
-# opolo
+# Opolo
 
-opolo, the cutest opossum on Discord!
+Opolo, the cutest opossum on Discord!
 
 ## Structure
 
 ```
 ├───assets - Assets such as images
 ├───db - Database
-├───ocl - opolo command library
+├───ocl - Opolo command library
 │   ├───args - Argument parsing
 │   ├───embeds - UI/UX theming with embeds
 │   └───msgcol - Message collector
@@ -20,3 +20,7 @@ opolo, the cutest opossum on Discord!
 │   └───parsers - Argument Parsers
 └───utils - Utilities
 ```
+
+## License
+
+Under MIT license. View it [here](./LICENSE)
