@@ -62,7 +62,8 @@ func eightball(ctx *cmd.Context, next cmd.NextFunc) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	hazy := r.Intn(6)
 
-	if hazy == 5 { // 1/6 chance of giving a hazy response
+	// 1/6 chance of giving a hazy response
+	if hazy == 5 {
 		i := r.Intn(len(hazyResponses))
 		message = hazyResponses[i]
 		emoji = ":8ball:"
@@ -71,7 +72,7 @@ func eightball(ctx *cmd.Context, next cmd.NextFunc) {
 		i := r.Intn(len(responses))
 		message = responses[i]
 
-		if i > len(positiveResponses) {
+		if i >= len(positiveResponses) {
 			emoji = ":red_circle:"
 		} else {
 			emoji = ":green_circle:"
@@ -89,8 +90,8 @@ func genSeed(ctx *cmd.Context) int64 {
 }
 
 func sum(array []rune) (result int64) {
-	for _, v := range array {
-		result += int64(v)
+	for i, v := range array {
+		result += int64(v) * int64(i)
 	}
 	return
 }

@@ -39,6 +39,12 @@ func httpcat(ctx *cmd.Context, next cmd.NextFunc) {
 			ctx.Send(httpCat(arg))
 		} else if code := itemFromAinB(ctx.RawArgs, statusCodes); code != "" {
 			ctx.Send(httpCat(code))
+		} else if arg == "itjk" {
+			// big floppa
+			ctx.Send("https://piapiac.org/trash/floppa.webm")
+		} else if arg == "zorbyte" {
+			// SPEEN
+			ctx.Send("https://piapiac.org/trash/SPEEN.webm")
 		} else {
 			ctx.Send(httpCat("404"))
 		}

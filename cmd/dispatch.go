@@ -70,7 +70,7 @@ func Dispatch(session *discordgo.Session, msg *discordgo.Message) NextFunc {
 }
 
 func parseContent(prefix, content string) (callKey string, rawArgs []string) {
-	excludingPrefix := strings.TrimSpace(strings.ToLower(content))[len(prefix):]
+	excludingPrefix := strings.TrimSpace(content)[len(prefix):]
 	segments := stringSplitter.Split(excludingPrefix, -1)
 	callKey = segments[0]
 	rawArgs = segments[1:]

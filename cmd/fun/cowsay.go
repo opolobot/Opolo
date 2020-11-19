@@ -33,7 +33,7 @@ func init() {
 }
 
 func cowsay(ctx *cmd.Context, next cmd.NextFunc) {
-	message := ctx.Args["message"].(string)
+	message := strings.Join(ctx.RawArgs, " ")
 	send := createBubble(message, max)
 	send += cow
 	ctx.Send("```\n" + send + "```")
