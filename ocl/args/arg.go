@@ -13,26 +13,25 @@ type Argument struct {
 	parser Parser
 }
 
-// Create creates an argument.
-// N.B. The term new was not used because we're not necessarily making a new argument as a concept.
-func Create(ID string, parser Parser, info ...string) *Argument {
+// New creates an argument.
+func New(ID string, parser Parser, info ...string) *Argument {
 	name, required, greedy, err := parseID(ID)
 	if err != nil {
 		panic(err)
 	}
 
-	finalInfo := getInfo(info...)
+	finalInfo := getInfo(info)
 	userFriendlyID := makeUserFriendlyID(ID, finalInfo)
 
 	return &Argument{userFriendlyID, name, required, greedy, finalInfo, parser}
 }
 
-func getInfo(info ...string) (finalInfo string) {
+func getInfo(info []string) (finalInfo string) {
 	switch len(info) {
 	case 0:
 		break
 	case 1:
-		finalInfo = info[1]
+		finalInfo = info[0]
 	default:
 		finalInfo = strings.Join(info, ", ")
 	}

@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/opolobot/opolo/ocl"
-	"github.com/opolobot/opolo/ocl/embeds"
+	"github.com/opolobot/Opolo/ocl"
+	"github.com/opolobot/Opolo/ocl/embeds"
 )
 
 func init() {
-	cmd := &ocl.Command{
-		Name:        "flip",
-		Description: embeds.Subtitle("Flips a coin", "heads or tails"),
-		Stack:       []ocl.Middleware{flip},
-	}
+	cmd := ocl.New()
+	cmd.Name("flip")
+	cmd.Aliases("coin", "coinflip")
+	cmd.Description(embeds.Subtitle("Flips a coin", "heads or tails"))
+	cmd.Use(flip)
 
 	Category.Add(cmd)
 }

@@ -3,7 +3,7 @@ package ocl
 import (
 	"strings"
 
-	"github.com/opolobot/opolo/ocl/args"
+	"github.com/opolobot/Opolo/ocl/args"
 )
 
 // Next runs the next middleware in the chain.
@@ -15,15 +15,17 @@ type Middleware func(ctx *Context, next Next)
 
 // Command is a command
 type Command struct {
-	Name        string
-	Description string
-	Aliases     []string
-	Arguments   []*args.Argument
-	Stack       []Middleware
-	Permission  Permission
+	Name            string
+	Description     string
+	Aliases         []string
+	PermissionLevel PermissionLevel
+
+	args  []*args.Argument
+	stack []Middleware
 
 	category *Category
-	enabled  bool
+
+	enabled bool
 }
 
 // Category returns the category of the command.
@@ -34,9 +36,9 @@ func (cmd *Command) Category() *Category {
 // Usage describes how to use the command through the IDs of its arguments.
 func (cmd *Command) Usage() string {
 	var usageBldr strings.Builder
-	for i, arg := range cmd.Arguments {
+	for i, arg := range cmd.args {
 		usageBldr.WriteString(arg.ID)
-		if i < len(cmd.Arguments)-1 {
+		if i < len(cmd.args)-1 {
 			usageBldr.WriteString(" ")
 		}
 	}

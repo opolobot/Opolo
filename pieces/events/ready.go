@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/opolobot/opolo/utils"
+	"github.com/opolobot/Opolo/utils"
 )
 
 // Ready event.

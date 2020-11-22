@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/opolobot/opolo/utils"
-	"github.com/opolobot/opolo/ocl/args"
-	"github.com/opolobot/opolo/ocl/embeds"
+	"github.com/opolobot/Opolo/ocl/args"
+	"github.com/opolobot/Opolo/ocl/embeds"
+	"github.com/opolobot/Opolo/utils"
 )
 
 var stringSplitter = regexp.MustCompile(" +")
@@ -56,8 +56,8 @@ func Dispatch(session *discordgo.Session, msg *discordgo.Message) (next Next) {
 			if len(err) > 0 {
 				ctx.SendError(err[0])
 				return
-			} else if idx++; idx <= len(cmd.Stack)-1 {
-				cmd.Stack[idx](ctx, next)
+			} else if idx++; idx <= len(cmd.stack)-1 {
+				cmd.stack[idx](ctx, next)
 			}
 		}
 
@@ -80,7 +80,7 @@ func parseContent(prefix, content string) (callKey string, rawArgs []string) {
 
 func parseArgs(ctx *Context) (success bool) {
 	var err error
-	ctx.Args, err = args.Parse(ctx.Cmd.Arguments, ctx.RawArgs)
+	ctx.Args, err = args.Parse(ctx.Cmd.args, ctx.RawArgs)
 	if success = err == nil; !success {
 		if pErr, ok := err.(*args.ParsingError); ok {
 			ctx.Send(pErr.UIError())

@@ -5,17 +5,16 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/opolobot/opolo/ocl"
-	"github.com/opolobot/opolo/ocl/embeds"
+	"github.com/opolobot/Opolo/ocl"
+	"github.com/opolobot/Opolo/ocl/embeds"
 )
 
 func init() {
-	cmd := &ocl.Command{
-		Name:        "ping",
-		Aliases:     []string{"p"},
-		Description: "Calculates the bot latency and execution time",
-		Stack:       []ocl.Middleware{ping},
-	}
+	cmd := ocl.New()
+	cmd.Name("ping")
+	cmd.Aliases("p")
+	cmd.Description("Calculates the bot latency and command execution time")
+	cmd.Use(ping)
 
 	Category.Add(cmd)
 }

@@ -5,21 +5,20 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/opolobot/opolo/ocl"
-	"github.com/opolobot/opolo/ocl/args"
-	"github.com/opolobot/opolo/ocl/embeds"
-	"github.com/opolobot/opolo/pieces/parsers"
-	"github.com/opolobot/opolo/utils"
+	"github.com/opolobot/Opolo/ocl"
+	"github.com/opolobot/Opolo/ocl/args"
+	"github.com/opolobot/Opolo/ocl/embeds"
+	"github.com/opolobot/Opolo/pieces/parsers"
+	"github.com/opolobot/Opolo/utils"
 )
 
 func init() {
-	cmd := &ocl.Command{
-		Name:        "help",
-		Aliases:     []string{"h", "cmds", "commands"},
-		Description: "Provides help for using the opolo.",
-		Arguments:   []*args.Argument{args.Create("[cmd]", &parsers.String{})},
-		Stack:       []ocl.Middleware{help},
-	}
+	cmd := ocl.New()
+	cmd.Name("help")
+	cmd.Description("Provides you a list of commands for the bot and other useful information")
+	cmd.Aliases("h", "cmds", "commands")
+	cmd.Args(args.New("[cmd]", &parsers.String{}))
+	cmd.Use(help)
 
 	Category.Add(cmd)
 }
@@ -73,7 +72,7 @@ func individualHelp(ctx *ocl.Context, callKey string) error {
 		embed.Fields,
 		&discordgo.MessageEmbedField{
 			Name:  ":busts_in_silhouette:  Permission Level",
-			Value: fmt.Sprint(cmd.Permission),
+			Value: fmt.Sprint(cmd.PermissionLevel),
 		},
 		&discordgo.MessageEmbedField{
 			Name:  ":books:  Category",
@@ -110,7 +109,7 @@ func regularHelp(ctx *ocl.Context) {
 			embed.Fields = append(embed.Fields, field)
 		}
 
-		if ctx.HasPermission(cmd.Permission) {
+		if ctx.HasPermission(cmd.PermissionLevel) {
 			field.Value += "`" + cmd.Name + "`"
 			if counted < len(cat.Commands)-1 {
 				field.Value += ", "

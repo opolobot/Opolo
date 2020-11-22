@@ -2,8 +2,8 @@ package events
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/opolobot/opolo/ocl"
-	"github.com/opolobot/opolo/ocl/msgcol"
+	"github.com/opolobot/Opolo/ocl"
+	"github.com/opolobot/Opolo/ocl/msgcol"
 )
 
 // MessageCreate event.

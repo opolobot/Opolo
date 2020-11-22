@@ -1,11 +1,11 @@
 package ocl
 
-// Permission is a permission enum for ocl.
-type Permission int
+// PermissionLevel is a permission enum for ocl.
+type PermissionLevel int
 
 const (
 	// PermissionMember is the member level permission.
-	PermissionMember Permission = iota
+	PermissionMember PermissionLevel = iota
 
 	// PermissionModerator is the moderator level permission.
 	PermissionModerator
@@ -22,6 +22,6 @@ const (
 
 var permNames = [...]string{"Member", "Moderator", "Administrator", "Owner", "Maintainer"}
 
-func (perm Permission) String() string {
+func (perm PermissionLevel) String() string {
 	return permNames[perm]
 }

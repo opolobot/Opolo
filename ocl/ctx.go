@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/opolobot/opolo/ocl/embeds"
-	"github.com/opolobot/opolo/ocl/msgcol"
-	"github.com/opolobot/opolo/utils"
+	"github.com/opolobot/Opolo/ocl/embeds"
+	"github.com/opolobot/Opolo/ocl/msgcol"
+	"github.com/opolobot/Opolo/utils"
 )
 
 const (
@@ -148,7 +148,7 @@ func (ctx *Context) Delete(msg ...*discordgo.Message) error {
 // ---- Permissions ----
 
 // HasPermission checks the user model if a user has a permission.
-func (ctx *Context) HasPermission(perm Permission) (has bool) {
+func (ctx *Context) HasPermission(perm PermissionLevel) (has bool) {
 	if perm == PermissionMaintainer {
 		for _, maintainer := range utils.GetConfig().Maintainers {
 			has = maintainer == ctx.Msg.Author.ID
@@ -196,8 +196,6 @@ func (ctx *Context) Prompt(prompt string) (int, error) {
 
 	if !accepted {
 		if denied {
-			ctx.Send("Cancelling purge.")
-
 			return PromptDeny, nil
 		}
 

@@ -3,7 +3,7 @@ package args
 import (
 	"reflect"
 
-	"github.com/opolobot/opolo/utils"
+	"github.com/opolobot/Opolo/utils"
 )
 
 // ParsedArguments is a map of arguments using the name of the argument as the key.

@@ -8,8 +8,13 @@ type Category struct {
 	Commands []*Command
 }
 
-// Add adds a command to the category.
-func (cat *Category) Add(cmd *Command) {
+// Add adds a command via its builder to the category.
+func (cat *Category) Add(cmdBldr *Builder) {
+	cat.AddCommand(cmdBldr.cmd)
+}
+
+// AddCommand adds a command to the category.
+func (cat *Category) AddCommand(cmd *Command) {
 	cmd.category = cat
 	cat.Commands = append(cat.Commands, cmd)
 }

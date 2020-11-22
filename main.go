@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/opolobot/opolo/pieces"
-	"github.com/opolobot/opolo/utils"
+	"github.com/opolobot/Opolo/pieces"
+	"github.com/opolobot/Opolo/utils"
 )
 
 func main() {
