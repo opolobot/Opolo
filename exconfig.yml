@@ -1,5 +1,20 @@
 # When using the bot yourself, you need to rename this file to config.yml
-token: "keep this a secret"
-logChannel: "make sure to fill this in, as their is no empty nil value fallback right now"
+
+# keep this a secret!
+token: ""
+
+# if you want bot errors to be logged, supply a channel ID for that here.
+logChannel: ""
+
 prefix: ";"
-status: "I'm just a beverage"
+
+# You can interpolate the prefix ONCE in the status using {prefix}
+status: "{prefix}help ^.^"
+
+# The version of opolo we are running, this should reflect the github releases if any.
+# TODO(@zorbyte): Use git to find releases instead of config
+version: 0.1.0
+
+# A list of bot maintainers.
+maintainers:
+  - userID
