@@ -83,7 +83,7 @@ func isRequiredBrackets(opening, closing rune) bool {
 }
 
 func isGreedyID(ID string) bool {
-	return ID[1:3] == "..."
+	return ID[1:4] == "..."
 }
 
 func getNameOfID(ID string, greedy bool) string {
@@ -97,8 +97,8 @@ func getNameOfID(ID string, greedy bool) string {
 }
 
 func keyValueName(name string) string {
-	keyAndVal := strings.SplitN(name, "=", 2)
-	if len(keyAndVal) == 0 {
+	keyAndVal := strings.Split(name, "=")
+	if len(keyAndVal) == 1 {
 		return ""
 	}
 

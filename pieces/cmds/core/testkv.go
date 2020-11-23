@@ -11,14 +11,12 @@ import (
 func init() {
 	cmd := ocl.New()
 	cmd.Name("testkv")
-	cmd.Args(args.New("<test=thing>", &parsers.String{}))
+	cmd.Args(args.New("[...nom_nom_greedy]", &parsers.String{}), args.New("<test=thing>", &parsers.String{}))
 	cmd.Use(testkv)
 
 	Category.Add(cmd)
 }
 
 func testkv(ctx *ocl.Context, _ ocl.Next) {
-	fmt.Print(ctx.Args)
-	test := ctx.Args["test"].(string)
-	ctx.Send(test)
+	ctx.Send(fmt.Sprint(ctx.Args))
 }

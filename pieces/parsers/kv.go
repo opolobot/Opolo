@@ -17,8 +17,8 @@ type KeyValue struct {
 
 // Parse parses the value from a key=value string if the key matches.
 func (kv *KeyValue) Parse(raw string) (interface{}, error) {
-	keyAndVal := strings.SplitN(raw, "=", 2)
-	if len(keyAndVal) == 0 || keyAndVal[0] != kv.Key {
+	keyAndVal := strings.Split(raw, "=")
+	if len(keyAndVal) == 1 || keyAndVal[0] != kv.Key {
 		return "", nil
 	}
 

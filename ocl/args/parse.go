@@ -2,7 +2,9 @@ package args
 
 import (
 	"reflect"
+	"strings"
 
+	"github.com/opolobot/Opolo/pieces/parsers"
 	"github.com/opolobot/Opolo/utils"
 )
 
@@ -14,29 +16,32 @@ func Parse(args []*Argument, rawArgs []string) (ParsedArguments, error) {
 	parsed := make(ParsedArguments)
 
 	// Index for the raw arguments
-	i := 0
-	for _, arg := range args {
+	rawIdx := 0
+	for argIdx, arg := range args {
 		var output interface{}
-		if i > len(rawArgs)-1 {
+		if rawIdx > len(rawArgs)-1 {
 			output = arg.parser.ZeroVal()
 		} else {
 			if arg.greedy {
 				output = make([]interface{}, 0)
 			}
 
-			for j := 0; i < len(rawArgs); i++ {
-				raw := rawArgs[i]
+			for greedyIdx := 0; rawIdx < len(rawArgs); rawIdx++ {
+				raw := rawArgs[rawIdx]
 				out, err := handleArg(arg, raw)
 				if err != nil {
 					return nil, err
 				}
 
 				if arg.greedy {
-					// If the output of a greedy arg is a zero value, do not append it
-					// and assume that the arguments have ended.
 					if out == arg.parser.ZeroVal() {
-						i--
 						break
+					}
+
+					if strings.Contains(raw, "=") && argIdx+1 < len(args) {
+						if _, ok := args[argIdx+1].parser.(*parsers.KeyValue); ok {
+							break
+						}
 					}
 
 					output = append(output.([]interface{}), out)
@@ -44,11 +49,11 @@ func Parse(args []*Argument, rawArgs []string) (ParsedArguments, error) {
 					output = out
 				}
 
-				if !arg.greedy && j == 0 {
+				if !arg.greedy && greedyIdx == 0 {
 					break
 				}
 
-				j++
+				greedyIdx++
 			}
 		}
 
