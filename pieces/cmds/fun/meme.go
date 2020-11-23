@@ -58,13 +58,13 @@ func meme(ctx *ocl.Context, next ocl.Next) {
 		x := float64(width / 2)
 		y := float64(height) - fontSize
 
-		drawTextWithStroke(dc, bottomtext, x, y, fontSize, stroke, false)
+		drawTextWithStroke(dc, bottomtext, x, y, fontSize, stroke, true)
 	}
 	if toptext != "" {
 		x := float64(width / 2)
 		y := fontSize
 
-		drawTextWithStroke(dc, toptext, x, y, fontSize, stroke, true)
+		drawTextWithStroke(dc, toptext, x, y, fontSize, stroke, false)
 	}
 
 	var buf bytes.Buffer
@@ -102,15 +102,13 @@ func drawTextWithStroke(dc *gg.Context, text string, x, y, fontSize float64, str
 	drawText(dc, text, x, y, fontSize, down)
 }
 
-func drawText(dc *gg.Context, text string, x, y, fontSize float64, down bool) {
+func drawText(dc *gg.Context, text string, x, y, fontSize float64, up bool) {
 	texts := dc.WordWrap(text, float64(dc.Width()))
+	if up {
+		y -= float64(len(texts)-1) * dc.FontHeight()
+	}
 	for i, t := range texts {
-		newy := y
-		if down {
-			newy += float64(i) * dc.FontHeight()
-		} else {
-			newy -= float64(len(texts)-(i+1)) * dc.FontHeight()
-		}
+		newy := y + float64(i)*dc.FontHeight()
 		dc.DrawStringAnchored(t, x, newy, 0.5, 0.5)
 	}
 }
