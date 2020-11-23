@@ -58,13 +58,13 @@ func meme(ctx *ocl.Context, next ocl.Next) {
 		x := float64(width / 2)
 		y := float64(height) - fontSize
 
-		drawText(dc, bottomtext, x, y, fontSize, stroke)
+		drawTextWithStroke(dc, bottomtext, x, y, fontSize, stroke, false)
 	}
 	if toptext != "" {
 		x := float64(width / 2)
 		y := fontSize
 
-		drawText(dc, toptext, x, y, fontSize, stroke)
+		drawTextWithStroke(dc, toptext, x, y, fontSize, stroke, true)
 	}
 
 	var buf bytes.Buffer
@@ -82,7 +82,7 @@ func meme(ctx *ocl.Context, next ocl.Next) {
 	})
 }
 
-func drawText(dc *gg.Context, text string, x, y, fontSize float64, stroke int) {
+func drawTextWithStroke(dc *gg.Context, text string, x, y, fontSize float64, stroke int, down bool) {
 	dc.SetRGB(0, 0, 0)
 
 	// literally shamelessly stolen from https://github.com/fogleman/gg/blob/master/examples/meme.go
@@ -94,12 +94,25 @@ func drawText(dc *gg.Context, text string, x, y, fontSize float64, stroke int) {
 			}
 			x := x + float64(dx)
 			y := y + float64(dy)
-			dc.DrawStringAnchored(text, x, y, 0.5, 0.5)
+			drawText(dc, text, x, y, fontSize, down)
 		}
 	}
 
 	dc.SetRGB(1, 1, 1)
-	dc.DrawStringAnchored(text, x, y, 0.5, 0.5)
+	drawText(dc, text, x, y, fontSize, down)
+}
+
+func drawText(dc *gg.Context, text string, x, y, fontSize float64, down bool) {
+	texts := dc.WordWrap(text, float64(dc.Width()))
+	for i, t := range texts {
+		newy := y
+		if down {
+			newy += float64(i) * dc.FontHeight()
+		} else {
+			newy -= float64(len(texts)-(i+1)) * dc.FontHeight()
+		}
+		dc.DrawStringAnchored(t, x, newy, 0.5, 0.5)
+	}
 }
 
 func getAttachment(m *discordgo.Message, s *discordgo.Session, next ocl.Next) (img image.Image, t string) {

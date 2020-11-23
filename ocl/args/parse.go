@@ -48,6 +48,10 @@ func Parse(args []*Argument, rawArgs []string) (ParsedArguments, error) {
 						break
 					}
 
+					if strings.Contains(raw, "=") {
+						break
+					}
+
 					output = append(output.([]interface{}), out)
 				} else {
 					output = out
