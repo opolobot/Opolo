@@ -1,6 +1,10 @@
 package args
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/opolobot/Opolo/pieces/parsers"
+)
 
 // Argument for commands.
 type Argument struct {
@@ -15,13 +19,17 @@ type Argument struct {
 
 // New creates an argument.
 func New(ID string, parser Parser, info ...string) *Argument {
-	name, required, greedy, err := parseID(ID)
+	name, required, greedy, keyValue, err := parseID(ID)
 	if err != nil {
 		panic(err)
 	}
 
 	finalInfo := getInfo(info)
 	userFriendlyID := makeUserFriendlyID(ID, finalInfo)
+
+	if keyValue {
+		parser = &parsers.KeyValue{Key: name, Parser: parser}
+	}
 
 	return &Argument{userFriendlyID, name, required, greedy, finalInfo, parser}
 }

@@ -7,6 +7,7 @@ import (
 )
 
 // Model is the base model for our database.
+// We use Discord IDs as the ID/primary key.
 type Model struct {
 	ID        string `gorm:"primaryKey"`
 	CreatedAt time.Time
