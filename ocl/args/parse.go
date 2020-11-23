@@ -2,6 +2,7 @@ package args
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/opolobot/Opolo/utils"
 )
@@ -12,7 +13,7 @@ type ParsedArguments = map[string]interface{}
 // Parse parses the raw arguments into a map.
 func Parse(args []*Argument, rawArgs []string) (ParsedArguments, error) {
 	parsed := make(ParsedArguments)
-
+	m := mapKeyedValues(rawArgs)
 	// Index for the raw arguments
 	i := 0
 	for _, arg := range args {
@@ -24,7 +25,15 @@ func Parse(args []*Argument, rawArgs []string) (ParsedArguments, error) {
 				output = make([]interface{}, 0)
 			}
 
-			for j := 0; i < len(rawArgs); i++ {
+			if arg.keyed {
+				out, err := handleArg(arg, m[arg.name])
+				if err != nil {
+					return nil, err
+				}
+				output = out
+			}
+
+			for j := 0; i < len(rawArgs) && !arg.keyed; i++ {
 				raw := rawArgs[i]
 				out, err := handleArg(arg, raw)
 				if err != nil {
@@ -93,4 +102,21 @@ func validateArgOutput(arg *Argument, output interface{}) error {
 	}
 
 	return nil
+}
+
+func mapKeyedValues(rawArgs []string) map[string]string {
+	name := ""
+	m := make(map[string]string)
+
+	for _, arg := range rawArgs {
+		if strings.Contains(arg, "=") {
+			keyVal := strings.Split(arg, "=")
+			name = keyVal[0]
+			m[name] = keyVal[1]
+		} else if name != "" {
+			m[name] += " " + arg
+		}
+	}
+
+	return m
 }

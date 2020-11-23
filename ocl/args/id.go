@@ -20,7 +20,7 @@ func (err *bracketsError) Error() string {
 	return fmt.Sprintf(err.msg+": opening=%v, closing=%v", err.opening, err.closing)
 }
 
-func parseID(ID string) (name string, required, greedy bool, err error) {
+func parseID(ID string) (name string, required, greedy, keyed bool, err error) {
 	if len(ID) < 3 {
 		err = fmt.Errorf("can not have an ID that is < 3 characters")
 		return
@@ -34,7 +34,8 @@ func parseID(ID string) (name string, required, greedy bool, err error) {
 
 	required = isRequiredBrackets(opening, closing)
 	greedy = isGreedyID(ID)
-	name = getNameOfID(ID, greedy)
+	keyed = isKeyedID(ID)
+	name = getNameOfID(ID, greedy, keyed)
 
 	return
 }
@@ -69,15 +70,23 @@ func isRequiredBrackets(opening, closing rune) bool {
 }
 
 func isGreedyID(ID string) bool {
-	return ID[1:3] == "..."
+	return ID[1:4] == "..."
 }
 
-func getNameOfID(ID string, greedy bool) string {
+func isKeyedID(ID string) bool {
+	return ID[len(ID)-2] == '='
+}
+
+func getNameOfID(ID string, greedy, keyed bool) string {
 	nameIdxStart := 1
 	if greedy {
 		nameIdxStart += 3
 	}
 
 	endIdx := len(ID) - 1
+	if keyed {
+		endIdx--
+	}
+
 	return ID[nameIdxStart:endIdx]
 }

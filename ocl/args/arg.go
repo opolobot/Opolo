@@ -8,6 +8,7 @@ type Argument struct {
 	name     string
 	required bool
 	greedy   bool
+	keyed    bool
 	info     string
 
 	parser Parser
@@ -15,7 +16,7 @@ type Argument struct {
 
 // New creates an argument.
 func New(ID string, parser Parser, info ...string) *Argument {
-	name, required, greedy, err := parseID(ID)
+	name, required, greedy, keyed, err := parseID(ID)
 	if err != nil {
 		panic(err)
 	}
@@ -23,7 +24,7 @@ func New(ID string, parser Parser, info ...string) *Argument {
 	finalInfo := getInfo(info)
 	userFriendlyID := makeUserFriendlyID(ID, finalInfo)
 
-	return &Argument{userFriendlyID, name, required, greedy, finalInfo, parser}
+	return &Argument{userFriendlyID, name, required, greedy, keyed, finalInfo, parser}
 }
 
 func getInfo(info []string) (finalInfo string) {
