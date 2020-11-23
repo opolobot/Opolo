@@ -44,8 +44,8 @@ func meme(ctx *ocl.Context, next ocl.Next) {
 	r := img.Bounds()
 	width := r.Dx()
 	height := r.Dy()
-	fontSize := float64(height / 8)
-	stroke := 6
+	fontSize := float64(((height + width) / 2) / 8)
+	stroke := fontSize / 16
 
 	dc := gg.NewContext(width, height)
 	dc.DrawImage(img, 0, 0)
@@ -82,7 +82,7 @@ func meme(ctx *ocl.Context, next ocl.Next) {
 	})
 }
 
-func drawTextWithStroke(dc *gg.Context, text string, x, y, fontSize float64, stroke int, down bool) {
+func drawTextWithStroke(dc *gg.Context, text string, x, y, fontSize, stroke float64, down bool) {
 	dc.SetRGB(0, 0, 0)
 
 	// literally shamelessly stolen from https://github.com/fogleman/gg/blob/master/examples/meme.go
